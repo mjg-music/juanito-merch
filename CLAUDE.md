@@ -10,6 +10,10 @@ and join the mailing list.
 Built for Juanito by a friend (the repo owner). Juanito is **not** a developer —
 every decision favors "he can fix a typo on his phone" over elegance.
 
+- **First show this is for:** Saturday **October 10, 2026**, 8 PM, Granada
+  Theater, 3022 Hennepin Ave S, Minneapolis — with dancers from Zorongo Flamenco
+  Dance Theater. The page carries this in `config.show`; update or null it out
+  after the date passes, since a stale show line is worse than none.
 - **Business entity:** checks are payable to **Three Columns Music**.
 - **Upcoming album:** *Gold & Rose*, a flamenco celebration of Jimi Hendrix.
   Motéma Music, February 2027. Presale details still TBD — the page shows a

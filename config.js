@@ -13,6 +13,19 @@ window.SITE = {
   tagline: "Merch &amp; Mailing List",
   note: "Pick what you'd like, then pay any way below.",
 
+  /* --- Tonight's show ----------------------------------------
+     Shown as a small line above his name, so people know they're
+     in the right place. Set show: null to hide it entirely.   */
+  show: {
+    venue: "Granada Theater",
+    city: "Minneapolis, MN",
+    date: "Saturday, October 10",
+    time: "8 PM",
+    // Eventbrite listing. Shown in the links row at the bottom
+    // so people can send it to a friend. Set to "" to hide.
+    ticketUrl: "https://www.eventbrite.com/e/juanito-pascual-trio-a-flamenco-celebration-of-jimi-hendrix-tickets-1990615820505"
+  },
+
   // Square photo at assets/portrait.jpg (~800x800).
   // Leave as-is and a gold "JP" monogram shows instead.
   portrait: "assets/portrait.jpg",
@@ -101,6 +114,7 @@ window.SITE = {
 
   /* --- Secondary links (optional) ---------------------------- */
   links: [
+    { label: "Tonight's show",     url: "https://www.eventbrite.com/e/juanito-pascual-trio-a-flamenco-celebration-of-jimi-hendrix-tickets-1990615820505" },
     { label: "Instagram",          url: "https://instagram.com/jpas.guitar" },
     { label: "YouTube",            url: "https://youtube.com/@juanitopascual1" },
     { label: "juanitopascual.com", url: "https://juanitopascual.com" }

@@ -51,6 +51,18 @@
       'onerror="this.outerHTML=\'<div class=&quot;monogram&quot;><span>' +
       initials(S.artist) + '</span></div>\'">'
     : '<div class="monogram"><span>' + initials(S.artist) + '</span></div>';
+  // Show line: confirms to someone standing at the booth that they scanned
+  // the right code. Degrades gracefully if any field is missing.
+  if (S.show) {
+    var where = [S.show.venue, S.show.city].filter(Boolean).join(' &middot; ');
+    var when = [S.show.date, S.show.time].filter(Boolean).join(' &middot; ');
+    if (where || when) {
+      html += '<p class="eyebrow">' +
+        (where ? '<span>' + where + '</span>' : '') +
+        (when ? '<span>' + when + '</span>' : '') + '</p>';
+    }
+  }
+
   html += '<h1>' + (S.artist || '') + '</h1>';
   if (S.tagline) html += '<p class="tagline">' + S.tagline + '</p>';
   if (S.note) html += '<p class="sub">' + S.note + '</p>';
