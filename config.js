@@ -1,79 +1,125 @@
 /* ============================================================
-   JUANITO PASCUAL — PREORDER / MERCH BOOTH PAGE
+   JUANITO PASCUAL — MERCH BOOTH PAGE
    ------------------------------------------------------------
    THIS IS THE ONLY FILE YOU NEED TO EDIT.
-   Replace every value marked TODO. Save, commit, push.
-   Nothing else in this project needs to change.
+   Anything marked TODO still needs a real value.
+   Save, then run:  npx vercel --prod
    ============================================================ */
 
 window.SITE = {
+
   /* --- Header ------------------------------------------------ */
   artist: "Juanito Pascual",
-  tagline: "Gold &amp; Rose — A Flamenco Celebration of Jimi Hendrix",
-  // Shown under the tagline. Set to "" to hide.
-  note: "Preorder the new album · Out February 2027 on Motéma Music",
+  tagline: "Merch &amp; Mailing List",
+  note: "Pick what you'd like, then pay any way below.",
 
-  // Put a square photo at assets/portrait.jpg (about 800x800).
-  // Set to null to show the gold monogram instead.
+  // Square photo at assets/portrait.jpg (~800x800).
+  // Leave as-is and a gold "JP" monogram shows instead.
   portrait: "assets/portrait.jpg",
 
-  /* --- Price shown on the page ------------------------------- */
-  // Appears as a line of helper text above the payment buttons.
-  // Set to "" to hide.
-  priceNote: "CD preorder $25 · Vinyl preorder $40 · Add $5 for shipping",
+  /* --- What's for sale ---------------------------------------
+     `items` are listed with a price. `options` are the bundle
+     tiers under a heading. Delete or add freely.             */
+  merch: [
+    {
+      heading: "CDs",
+      // Bundle pricing — buyer picks any titles.
+      options: [
+        { label: "1 CD",  price: "$20" },
+        { label: "2 CDs", price: "$30" },
+        { label: "3 CDs", price: "$40" }
+      ],
+      titles: [
+        "New Flamenco Trio",
+        "Language of the Heart",
+        "Cosas en Com&uacute;n"
+      ]
+    },
+    {
+      heading: "Method Book",
+      options: [
+        { label: "The Total Flamenco Guitarist", price: "$25" }
+      ]
+    },
+    {
+      heading: "New Album Presale",
+      // Set `soon: true` to show a muted "more info soon" row
+      // instead of a price. Flip to options + price when ready.
+      soon: true,
+      soonNote: "Gold &amp; Rose &mdash; details coming soon"
+    }
+    // T-SHIRTS: when they exist, copy the Method Book block above,
+    // change the heading to "T-Shirts" and list sizes + price.
+  ],
 
-  /* --- Email list -------------------------------------------- */
-  // TODO: paste your Google Form share link here.
-  // Make the form at forms.google.com -> one "Email" question (+ optional
-  // "First name"). Click Send -> link icon -> copy link. Responses land in
-  // a spreadsheet you own. See README.md step 2.
-  emailFormUrl: "https://forms.gle/TODO_REPLACE_ME",
-  emailLabel: "Join the mailing list",
-  emailSub: "Tour dates, release news, nothing else",
-
-  /* --- Payment options ---------------------------------------
-     Order here = order on the page. Delete any block you don't want.
-     Set `url` to "" and the button is hidden automatically.      */
+  /* --- How to pay --------------------------------------------
+     type "link"  -> a button that opens an app or website
+     type "copy"  -> shows a value with a Copy button (no link)
+     type "info"  -> plain instructions, no button
+     Any "link" whose url still says TODO is hidden automatically. */
   payments: [
     {
-      id: "paypal",
-      label: "PayPal",
-      sub: "Card or PayPal balance",
-      // TODO: your PayPal.Me link, e.g. "https://paypal.me/juanitopascual"
-      url: "https://paypal.me/TODO_REPLACE_ME"
-    },
-    {
+      type: "link",
       id: "venmo",
       label: "Venmo",
-      sub: "@TODO-replace-me",
-      // TODO: replace TODO-replace-me with your Venmo username (no @).
-      // The note/amount prefill is optional but nice.
-      url: "https://venmo.com/TODO-replace-me?txn=pay&note=Gold%20%26%20Rose%20preorder"
+      sub: "@Juanito-Pascual",
+      url: "https://venmo.com/u/Juanito-Pascual"
     },
     {
-      id: "cashapp",
-      label: "Cash App",
-      sub: "$TODO-replace-me",
-      // TODO: replace with your $Cashtag
-      url: "https://cash.app/$TODO-replace-me"
+      // TODO: PayPal.Me links need a USERNAME, not an email address.
+      // Juanito: go to https://paypal.me/my/settings and claim one
+      // (takes 2 min), then replace this whole block with:
+      //   { type:"link", id:"paypal", label:"PayPal",
+      //     sub:"Card or PayPal balance",
+      //     url:"https://paypal.me/HIS-NEW-USERNAME" }
+      type: "copy",
+      id: "paypal",
+      label: "PayPal",
+      sub: "Send to this address",
+      value: "jp@jpascual.com"
+    },
+    {
+      type: "info",
+      id: "cash",
+      label: "Cash",
+      sub: "Happy to take it at the booth."
+    },
+    {
+      type: "info",
+      id: "check",
+      label: "Check",
+      sub: "Payable to <b>Three Columns Music</b>"
     }
   ],
 
-  /* --- Secondary links (optional) ----------------------------
-     Shown smaller, below the payment buttons. Delete freely.   */
+  /* --- Email list --------------------------------------------
+     His own site already has an "Email List Sign-up" section,
+     so this points there. No form to build or maintain.      */
+  emailUrl: "https://juanitopascual.com/contact",
+  emailLabel: "Join the mailing list",
+  emailSub: "Tour dates and new releases",
+
+  /* --- Secondary links (optional) ---------------------------- */
   links: [
-    { label: "Listen on Spotify",  url: "" },
     { label: "Instagram",          url: "https://instagram.com/jpas.guitar" },
     { label: "YouTube",            url: "https://youtube.com/@juanitopascual1" },
     { label: "juanitopascual.com", url: "https://juanitopascual.com" }
   ],
 
   /* --- Footer ------------------------------------------------- */
-  // Shown at the very bottom. Set to "" to hide.
-  footer: "Questions at the booth? Just ask — thank you for the support.",
+  footer: "Thank you for the support &mdash; come say hello.",
 
-  /* --- After-payment instruction ------------------------------
-     Critical: a P2P payment alone doesn't tell you where to ship.
-     This banner tells people to also sign up. Set to "" to hide. */
-  shipNote: "After you pay, tap “Join the mailing list” so I know where to send it."
+  /* --- QR codes ----------------------------------------------
+     `npm run qr` builds one code per entry below.
+     TODO: replace siteUrl with the real Vercel URL once deployed.
+     Everything else is already correct.                      */
+  qr: {
+    siteUrl: "https://TODO-REPLACE-WITH-VERCEL-URL",
+    codes: [
+      { file: "booth",  label: "Merch &amp; mailing list", use: "siteUrl" },
+      { file: "email",  label: "Join the mailing list",    url: "https://juanitopascual.com/contact" },
+      { file: "venmo",  label: "Pay by Venmo",             url: "https://venmo.com/u/Juanito-Pascual" }
+      // PayPal code gets added here once he has a PayPal.Me username.
+    ]
+  }
 };

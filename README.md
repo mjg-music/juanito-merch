@@ -1,77 +1,92 @@
-# Juanito Pascual — merch booth preorder page
+# Juanito Pascual — merch booth page
 
-One page on a phone. People scan a QR code at the booth, tap to pay, tap to
-join the mailing list. That's the whole thing.
+One page on a phone. People scan a QR code at the booth, see what's for sale and
+what it costs, pay however they like, and join the mailing list.
 
 No accounts to manage, no backend, no monthly cost.
 
 ---
 
-## Setup — about 20 minutes, once
+## What's already filled in
 
-### 1. Fill in `config.js`
+From Juanito's notes, all of this is **done** in `config.js`:
 
-Open `config.js`. Every line you need to change is marked `TODO`. You need:
+- **CDs** — 1/$20, 2/$30, 3/$40 · *New Flamenco Trio*, *Language of the Heart*, *Cosas en Común*
+- **Method book** — *The Total Flamenco Guitarist*, $25
+- **New album presale** — shows a "details coming soon" line until there's real info
+- **Venmo** — `@Juanito-Pascual`, live button and QR code
+- **Cash** and **check** — check payee shown as *Three Columns Music*
+- **Mailing list** — points at the Email List Sign-up on juanitopascual.com/contact
 
-| What | Where to get it | Looks like |
-|---|---|---|
-| PayPal link | paypal.com → **PayPal.Me** → claim your link | `https://paypal.me/juanitopascual` |
-| Venmo username | Venmo app → Me → the `@name` under your photo | `juanito-pascual` (no `@`) |
-| Cash App cashtag | Cash App → profile → your `$Cashtag` | `$juanitopascual` |
+## What's still needed
 
-Until a value is filled in, that button is **hidden** and a red notice appears
-at the top of the page reminding you. Nothing broken ever shows to a customer.
+### 1. A PayPal.Me username — Juanito has to do this
 
-### 2. Make the mailing-list form
+`jp@jpascual.com` is an email address, and **PayPal links only work from a
+username.** PayPal doesn't create one automatically, so there's no way to make a
+PayPal button or QR code from an email alone.
 
-1. Go to <https://forms.google.com> → blank form.
-2. Title it something like *Juanito Pascual — Mailing List*.
-3. Add these questions:
-   - **Email** (short answer, required)
-   - **First name** (short answer)
-   - **Mailing address** (paragraph) — *add this one if people are preordering
-     a physical CD or vinyl; it's how you know where to ship it*
-   - **Which did you order?** (multiple choice: CD / Vinyl / Just the mailing list)
-4. Click **Send** → the 🔗 link icon → **Shorten URL** → **Copy**.
-5. Paste it into `emailFormUrl` in `config.js`.
+**Juanito:** go to <https://paypal.me/my/settings>, click Create, and pick a
+username (`juanitopascual` if it's free). Takes about two minutes. Send Mike the
+link it gives you.
 
-Responses collect in a Google Sheet you own (Responses tab → the green sheet
-icon). Export to CSV any time to import into Mailchimp later.
+Until then the page shows the PayPal address with a **Copy** button, so people
+can still send money manually — it just takes them a few more taps.
 
-### 3. Add a photo (optional)
+### 2. T-shirts — if they're happening
 
-Drop a square photo at `assets/portrait.jpg` — roughly 800×800, under 300KB.
-Skip it and a gold **JP** monogram shows instead.
+Need sizes and a price. There's a commented-out block in `config.js` showing
+exactly where it goes.
 
-### 4. Put it online
+### 3. Presale details — when they exist
+
+Right now the New Album section just says "details coming soon". When there's a
+price and a date, that block becomes a normal priced row.
+
+---
+
+## Setup
+
+### Put it online
 
 ```bash
-npx vercel          # first run: it asks you to log in, then press Enter through the prompts
+npx vercel          # first run: log in, then press Enter through the prompts
 npx vercel --prod   # publish
 ```
 
-Vercel prints your live URL, something like
-`https://juanito-preorder.vercel.app`. **Write it down — the QR code bakes it in.**
+Vercel prints your live URL. In the dashboard → your project → Settings →
+Domains, rename it to something clean like `juanitopascual.vercel.app`.
 
-Want a nicer address? In the Vercel dashboard → your project → Settings →
-Domains, you can rename it to e.g. `juanitopascual-preorder.vercel.app` for free.
-**Do this before printing QR codes.**
+**Do this before making QR codes** — see the warning below.
 
-### 5. Make the QR codes
+Then paste that final URL into `qr.siteUrl` at the bottom of `config.js`.
+
+### Make the QR codes
 
 ```bash
-npm run qr -- https://your-live-url-from-step-4
+npm run qr
 ```
 
-That writes into `qr/out/`:
+It reads the URLs straight out of `config.js` and builds **three** codes:
 
-- **`print-sheet.html`** ← start here. Open it in a browser, press **Cmd+P**,
-  choose *Save as PDF*. Page 1 is a big table-tent sign for the merch table.
-  Page 2 is six wallet-sized cards to hand out — print on cardstock, cut on the
-  dashed lines.
-- `qr.svg` — vector. Give this to a print shop for banners or posters.
-- `qr-print.png` — 2400px, for large signage.
-- `qr-screen.png` — for Instagram stories, texts, or a slide.
+| Code | Goes to |
+|---|---|
+| `booth` | the merch page (the main one for the table) |
+| `email` | the mailing-list signup, straight to his site |
+| `venmo` | his Venmo profile |
+
+A `paypal` code gets added automatically once his PayPal.Me link is in `config.js`.
+
+For each one you get `name.svg` (vector, for print), `name-print.png` (2400px,
+large signs), and `name-screen.png` (600px, for Instagram or a text).
+
+Plus **`print-sheet.html`** — this is the one to start with. Open it in a
+browser, press **Cmd+P**, choose *Save as PDF*. You get a full-page table tent
+for each code, then a page of six hand-out cards for the main booth code. Print
+the cards on cardstock and cut the dashed lines.
+
+If a URL is still a placeholder, that code is skipped and the script tells you
+which one.
 
 ---
 
@@ -83,26 +98,33 @@ Edit `config.js`, then:
 npx vercel --prod
 ```
 
-The URL stays the same, so **already-printed QR codes keep working.** You can
-change prices, add a Spotify link, or swap the photo mid-tour and the signs on
-the table don't need reprinting.
+The URL stays the same, so **printed QR codes keep working.** Change prices, add
+a title, swap the photo mid-tour — the signs on the table don't need reprinting.
 
-> ⚠️ The one thing you must not change is the **URL** itself. The QR code is
-> that URL, physically printed. If it ever has to move, set up a redirect from
-> the old address instead of reprinting everything.
+> ⚠️ The one thing you must not change is the **URL**. A QR code is that URL,
+> physically printed; there's no redirect in between. If hosting ever has to
+> move, set up a redirect from the old address instead of reprinting everything.
+
+---
+
+## Add a photo (optional)
+
+Drop a square photo at `assets/portrait.jpg` — about 800×800, under 300KB. Skip
+it and a gold **JP** monogram shows instead; it looks intentional, so no rush.
 
 ---
 
 ## Night-of checklist
 
 - [ ] Red setup notice is gone from the page
-- [ ] Tapped every payment button on a real phone — each opens the right app
-      showing *your* name
-- [ ] Filled out the mailing-list form yourself; the row showed up in the sheet
-- [ ] Scanned the **printed** QR from three feet away in dim light
+- [ ] Prices on the page match what he's actually charging
+- [ ] Tapped the Venmo button on a real phone — opens the app on *his* profile
+- [ ] Tapped Copy on the PayPal row — the address actually copies
+- [ ] Mailing-list button lands on the signup section, not a 404
+- [ ] Scanned each **printed** code from three feet away in dim light
 - [ ] Looked at the page on an iPhone and an Android
-- [ ] Table tent printed, cards cut, a pen nearby for the people who'd rather
-      write their email on paper
+- [ ] Table tent printed, cards cut, and a pen and paper for anyone who'd
+      rather write their email down
 
 ## Preview locally
 

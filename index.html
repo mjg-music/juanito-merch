@@ -3,12 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Juanito Pascual — Preorder &amp; Mailing List</title>
-<meta name="description" content="Preorder Gold &amp; Rose and join the mailing list.">
+<title>Juanito Pascual — Merch &amp; Mailing List</title>
+<meta name="description" content="CDs, the method book, and the mailing list.">
 <meta name="theme-color" content="#1a0d12">
-<meta property="og:title" content="Juanito Pascual — Gold &amp; Rose">
-<meta property="og:description" content="Preorder the new album and join the mailing list.">
-<meta property="og:type" content="music.album">
+<meta property="og:title" content="Juanito Pascual — Merch &amp; Mailing List">
+<meta property="og:description" content="CDs, the method book, and the mailing list.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' x='4' font-size='26'>🎸</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +15,6 @@
 <style>
   :root{
     --ink:#1a0d12;
-    --ink-2:#2a141c;
     --rose:#c2566e;
     --rose-soft:#e08fa2;
     --gold:#d8ae5f;
@@ -24,8 +22,11 @@
     --paper:#f6eee6;
     --muted:#b79aa4;
     --line:rgba(216,174,95,.22);
+    --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+    --body:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     --radius:14px;
     --tap:58px;
+    color-scheme:dark;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
@@ -36,119 +37,144 @@
       var(--ink);
     background-attachment:fixed;
     color:var(--paper);
-    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-family:var(--body);
     -webkit-font-smoothing:antialiased;
     min-height:100vh;
     min-height:100dvh;
   }
   .wrap{
-    width:100%;
-    max-width:460px;
-    margin:0 auto;
+    width:100%;max-width:460px;margin:0 auto;
     padding:clamp(28px,7vw,52px) 16px calc(40px + env(safe-area-inset-bottom));
   }
 
   /* ---- header ---- */
   header{text-align:center}
-  .portrait{
+  .portrait,.monogram{
     width:118px;height:118px;border-radius:50%;
-    object-fit:cover;display:block;margin:0 auto 20px;
-    border:1px solid var(--line);
-    box-shadow:0 0 0 5px rgba(216,174,95,.06), 0 18px 40px -18px #000;
+    display:block;margin:0 auto 20px;border:1px solid var(--line);
   }
+  .portrait{object-fit:cover;box-shadow:0 0 0 5px rgba(216,174,95,.06),0 18px 40px -18px #000}
   .monogram{
-    width:118px;height:118px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    margin:0 auto 20px;
-    font-family:"Cormorant Garamond",Georgia,serif;
-    font-size:46px;color:var(--gold);
-    border:1px solid var(--line);
+    font-family:var(--display);font-size:46px;color:var(--gold);
     background:linear-gradient(160deg,rgba(216,174,95,.14),rgba(194,86,110,.08));
   }
+  .monogram span{display:block;margin-top:-4px;letter-spacing:.02em}
   h1{
-    font-family:"Cormorant Garamond",Georgia,serif;
-    font-weight:600;
-    font-size:clamp(32px,9vw,42px);
-    line-height:1.05;
-    margin:0 0 10px;
-    letter-spacing:.005em;
+    font-family:var(--display);font-weight:600;
+    font-size:clamp(32px,9vw,42px);line-height:1.05;
+    margin:0 0 10px;text-wrap:balance;
   }
   .tagline{
-    font-family:"Cormorant Garamond",Georgia,serif;
-    font-style:italic;
-    font-size:clamp(17px,4.6vw,20px);
-    color:var(--gold-bright);
-    margin:0 0 10px;
-    line-height:1.35;
+    font-family:var(--display);font-style:italic;
+    font-size:clamp(17px,4.6vw,20px);color:var(--gold-bright);
+    margin:0 0 10px;line-height:1.35;text-wrap:balance;
   }
-  .note{
-    font-size:13.5px;color:var(--muted);margin:0;line-height:1.5;
-    letter-spacing:.01em;
-  }
+  .sub{font-size:13.5px;color:var(--muted);margin:0;line-height:1.5}
   .rule{
-    width:54px;height:1px;margin:26px auto;
+    width:54px;height:1px;margin:26px auto;border:0;
     background:linear-gradient(90deg,transparent,var(--gold),transparent);
-    border:0;
   }
-
-  /* ---- sections ---- */
   .label{
     font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--muted);text-align:center;margin:0 0 14px;
+    color:var(--muted);text-align:center;margin:0 0 16px;
   }
-  .price{
-    text-align:center;font-size:13.5px;color:var(--rose-soft);
-    margin:-4px 0 16px;line-height:1.5;
-  }
-  .stack{display:flex;flex-direction:column;gap:11px}
 
-  /* ---- buttons ---- */
+  /* ---- merch menu ---- */
+  .menu{display:flex;flex-direction:column;gap:22px}
+  .group h2{
+    font-family:var(--display);font-weight:600;font-size:21px;
+    margin:0 0 9px;color:var(--gold-bright);letter-spacing:.01em;
+  }
+  .row{display:flex;align-items:baseline;gap:7px;padding:4px 0}
+  .row-label{font-size:15px;min-width:0}
+  .leader{
+    flex:1;height:1px;min-width:12px;
+    border-bottom:1px dotted rgba(216,174,95,.38);
+    transform:translateY(-3px);
+  }
+  .row-price{
+    font-size:15px;font-weight:600;color:var(--gold);
+    font-variant-numeric:tabular-nums;flex:none;
+  }
+  .titles{
+    list-style:none;margin:9px 0 0;padding:0;
+    display:flex;flex-direction:column;gap:3px;
+  }
+  .titles li{
+    font-family:var(--display);font-style:italic;
+    font-size:14.5px;color:var(--muted);line-height:1.4;
+  }
+  .titles li::before{content:"· ";color:var(--rose)}
+  .soon{
+    margin:0;font-size:13.5px;color:var(--muted);
+    font-style:italic;line-height:1.5;
+  }
+
+  /* ---- buttons & rows ---- */
+  .stack{display:flex;flex-direction:column;gap:11px}
   .btn{
     display:flex;align-items:center;gap:14px;
-    min-height:var(--tap);
-    padding:12px 18px;
-    border-radius:var(--radius);
-    text-decoration:none;
-    background:rgba(246,238,230,.045);
-    border:1px solid var(--line);
-    color:var(--paper);
-    transition:transform .14s ease, background .14s ease, border-color .14s ease;
+    min-height:var(--tap);padding:12px 18px;
+    border:1px solid var(--line);border-radius:var(--radius);
+    background:rgba(246,238,230,.045);color:var(--paper);
+    font:inherit;text-align:left;text-decoration:none;width:100%;
+    transition:transform .14s ease,background .14s ease,border-color .14s ease;
     -webkit-tap-highlight-color:transparent;
   }
-  .btn:active{transform:scale(.985);background:rgba(246,238,230,.09)}
-  @media(hover:hover){.btn:hover{background:rgba(246,238,230,.085);border-color:rgba(216,174,95,.45)}}
+  a.btn:active{transform:scale(.985);background:rgba(246,238,230,.09)}
+  .btn:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
+  @media(hover:hover){
+    a.btn:hover{background:rgba(246,238,230,.085);border-color:rgba(216,174,95,.45)}
+  }
   .btn .txt{flex:1;min-width:0}
-  .btn b{display:block;font-size:16.5px;font-weight:600;letter-spacing:.005em}
+  .btn b{display:block;font-size:16.5px;font-weight:600}
   .btn small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
-  .btn .arrow{color:var(--gold);font-size:17px;flex:none;opacity:.75}
+  .btn small b{display:inline;font-size:inherit;color:var(--paper)}
+  .btn .arrow{flex:none;color:var(--gold);font-size:17px;opacity:.75}
   .ico{
     flex:none;width:38px;height:38px;border-radius:10px;
     display:flex;align-items:center;justify-content:center;
-    background:rgba(216,174,95,.1);
-    border:1px solid var(--line);
+    background:rgba(216,174,95,.1);border:1px solid var(--line);
+    color:var(--gold);
   }
   .ico svg{width:20px;height:20px;display:block}
 
-  /* primary = email signup */
+  /* non-tappable rows: cash, check, copy */
+  .btn.as-row{cursor:default}
+  .btn.quiet{background:transparent;border-style:dashed;border-color:rgba(216,174,95,.16)}
+
+  .copy{
+    flex:none;font:inherit;font-size:13px;font-weight:600;
+    padding:9px 15px;min-height:40px;
+    border:1px solid var(--line);border-radius:999px;
+    background:rgba(216,174,95,.12);color:var(--gold-bright);
+    cursor:pointer;-webkit-tap-highlight-color:transparent;
+  }
+  .copy:active{background:rgba(216,174,95,.24)}
+  .copy:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
+  .copyval{
+    margin:-4px 0 0;text-align:center;
+    font-size:13px;color:var(--muted);
+  }
+  .copyval code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:13px;color:var(--rose-soft);
+    user-select:all;-webkit-user-select:all;
+  }
+
+  /* primary = mailing list */
   .btn.primary{
     background:linear-gradient(140deg,var(--gold) 0%,#c99a4c 100%);
-    border-color:var(--gold-bright);
-    color:#23121a;
+    border-color:var(--gold-bright);color:#23121a;
     box-shadow:0 10px 26px -14px rgba(216,174,95,.7);
   }
   .btn.primary small{color:rgba(35,18,26,.66)}
   .btn.primary .arrow{color:#23121a;opacity:.6}
-  .btn.primary .ico{background:rgba(35,18,26,.1);border-color:rgba(35,18,26,.18)}
-  @media(hover:hover){.btn.primary:hover{filter:brightness(1.06);border-color:#fff}}
-
-  /* ---- ship note ---- */
-  .shipnote{
-    margin:14px 0 0;padding:12px 15px;
-    border-left:2px solid var(--rose);
-    background:rgba(194,86,110,.1);
-    border-radius:0 10px 10px 0;
-    font-size:13px;line-height:1.5;color:#f0dbe1;
+  .btn.primary .ico{
+    background:rgba(35,18,26,.1);border-color:rgba(35,18,26,.18);color:#23121a;
   }
+  @media(hover:hover){.btn.primary:hover{filter:brightness(1.06);border-color:#fff}}
 
   /* ---- secondary links ---- */
   .links{
@@ -161,25 +187,39 @@
     border:1px solid rgba(246,238,230,.1);border-radius:999px;
     -webkit-tap-highlight-color:transparent;
   }
-  .links a:active{color:var(--paper);border-color:var(--line)}
+  .links a:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
   @media(hover:hover){.links a:hover{color:var(--gold-bright);border-color:var(--line)}}
 
   footer{
-    text-align:center;font-size:12.5px;color:rgba(183,154,164,.75);
-    margin-top:34px;line-height:1.6;
+    text-align:center;font-size:12.5px;line-height:1.6;
+    color:rgba(183,154,164,.75);margin-top:34px;
   }
 
-  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  /* ---- toast ---- */
+  #toast{
+    position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));
+    transform:translate(-50%,14px);max-width:calc(100vw - 32px);
+    padding:11px 17px;border:1px solid var(--line);border-radius:999px;
+    background:#2a141c;color:var(--paper);font-size:13px;
+    box-shadow:0 14px 34px -12px #000;
+    opacity:0;pointer-events:none;z-index:10;
+    transition:opacity .18s ease,transform .18s ease;
+  }
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+
   .warn{
     background:#7a1f2e;color:#ffe8ec;border:1px dashed #ff9fae;
     padding:11px 14px;border-radius:10px;font-size:12.5px;
     margin-bottom:18px;line-height:1.5;
   }
   .warn code{background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px}
+
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
   <main class="wrap" id="app"></main>
+  <div id="toast" role="status" aria-live="polite"></div>
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
