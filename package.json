@@ -1,0 +1,14 @@
+{
+  "name": "juanito-preorder",
+  "version": "1.0.0",
+  "description": "Mobile preorder + mailing list page and merch-booth QR codes for Juanito Pascual.",
+  "scripts": {
+    "qr": "node qr/make-qr.js",
+    "dev": "npx --yes serve . -l 3000"
+  },
+  "type": "commonjs",
+  "devDependencies": {
+    "qrcode": "^1.5.4"
+  },
+  "private": true
+}
