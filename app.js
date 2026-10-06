@@ -62,11 +62,19 @@
 
   /* --- Header ----------------------------------------------------------- */
   html += '<header>';
-  html += S.portrait
-    ? '<img class="portrait" src="' + esc(S.portrait) + '" alt="' + esc(S.artist) + '" ' +
-      'onerror="this.outerHTML=\'<div class=&quot;monogram&quot;><span>' +
-      initials(S.artist) + '</span></div>\'">'
-    : '<div class="monogram"><span>' + initials(S.artist) + '</span></div>';
+  if (S.portrait) {
+    // WebP where the phone supports it, JPEG everywhere else. Eager + high
+    // priority because it is the first thing on screen.
+    var webp = S.portrait.replace(/\.jpe?g$/i, '.webp');
+    html += '<picture>' +
+      (webp !== S.portrait ? '<source srcset="' + esc(webp) + '" type="image/webp">' : '') +
+      '<img class="portrait" src="' + esc(S.portrait) + '" alt="' + esc(S.artist) + '" ' +
+      'width="124" height="124" decoding="async" fetchpriority="high" ' +
+      'onerror="this.parentNode.outerHTML=\'<div class=&quot;monogram&quot;><span>' +
+      initials(S.artist) + '</span></div>\'"></picture>';
+  } else {
+    html += '<div class="monogram"><span>' + initials(S.artist) + '</span></div>';
+  }
   // Show line: confirms to someone standing at the booth that they scanned
   // the right code. Degrades gracefully if any field is missing.
   if (S.show) {

@@ -86,17 +86,45 @@ needs solving deliberately — don't assume the current setup covers it.
 
 ## Mobile constraints that are not negotiable
 
-Used one-handed, in a dark venue, on bad cell service, by people holding a drink.
+Used one-handed, in a dark venue, on bad cell service, on an iPhone, by people
+holding a drink — and by an audience that skews older than the web's defaults
+assume. Optimize for the fifty-five-year-old in row G, not for a benchmark.
 
-- Every tappable thing is at least **58px** tall (`--tap`).
+- **Zero third-party requests.** The display font is self-hosted in
+  `assets/fonts/`; body text uses the system stack, which is San Francisco on
+  an iPhone and costs nothing to load. Never reintroduce a Google Fonts link or
+  any other external host — venue wifi is the enemy, and a page that needs
+  another domain to render is a page that can fail at the booth.
+- **First-load budget: ~100KB over 6 same-origin requests.** If a change pushes
+  past that, something else comes out. Images are sized for their actual slot
+  (the 124px portrait ships at 360px for 3x retina, not 800px).
+- Every tappable thing is at least **62px** tall (`--tap`); pills and the copy
+  button are 46px. Apple's floor is 44px — don't go under it anywhere.
+- **Body text is 16px and secondary text is 14px**, deliberately larger than a
+  typical marketing page. Don't shrink type to fit more in; cut content instead.
+- All text passes WCAG AA against the *lightest* point of the background
+  gradient, which is the worst case. Verified ratios are in the commit for
+  "Optimize for iPhone"; re-check with that script if the palette changes.
 - Max content width **460px**; a phone page first, which merely survives desktop.
-- The only external request is Google Fonts; the page is fully readable if it fails.
-- Single committed dark palette — deep wine `#1a0d12`, gold `#d8ae5f`, rose
-  `#c2566e`, warm paper `#f6eee6`. It deliberately does **not** follow the
-  viewer's light theme, because it's read in a dim room. Keep `color-scheme: dark`
-  on `:root`.
+- Single committed dark palette — deep wine `#1a0d12`, gold `#dcb468`, rose
+  `#c2566e`, warm paper `#faf4ee`. It deliberately does **not** follow the
+  viewer's light theme, because it's read in a dim room. Keep `color-scheme: dark`.
+- `-webkit-text-size-adjust: 100%` so iOS doesn't reflow the type, and
+  `touch-action: manipulation` on tappables to drop the 300ms delay **without**
+  disabling pinch-zoom — older viewers rely on pinch-zoom, so never add
+  `maximum-scale` or `user-scalable=no` to the viewport meta.
 - Respect `prefers-reduced-motion` and `env(safe-area-inset-*)` (both wired).
 - Prices use `font-variant-numeric: tabular-nums` so the menu column aligns.
+- The portrait ships as `<picture>` with WebP + JPEG and explicit
+  `width`/`height`, so nothing shifts as it loads.
+
+## Keep it uncrowded
+
+Juanito is not especially technical, and neither is much of his audience. Every
+element on this page costs attention at a moment when someone is standing in a
+loud room deciding whether to buy a CD. The bar for adding anything is high.
+Cash and check share one row for exactly this reason. Before adding a section,
+delete one.
 
 ## QR rules
 

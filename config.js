@@ -114,14 +114,8 @@ window.SITE = {
     {
       type: "info",
       id: "cash",
-      label: "Cash",
-      sub: "Happy to take it at the booth."
-    },
-    {
-      type: "info",
-      id: "check",
-      label: "Check",
-      sub: "Payable to <b>Three Columns Music</b>"
+      label: "Cash or check",
+      sub: "Checks payable to <b>Three Columns Music</b>"
     }
   ],
 
