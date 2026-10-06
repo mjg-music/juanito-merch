@@ -1,5 +1,7 @@
 # Juanito Pascual — merch booth page
 
+**Live: <https://mjg-music.github.io/juanito-merch/>**
+
 One page on a phone. People scan a QR code at the booth, see what's for sale and
 what it costs, pay however they like, and join the mailing list.
 
@@ -47,19 +49,21 @@ price and a date, that block becomes a normal priced row.
 
 ## Setup
 
-### Put it online
+### It's already online
+
+The site is hosted free on GitHub Pages at
+<https://mjg-music.github.io/juanito-merch/>, straight from this repo's `main`
+branch. **To publish a change, just push it:**
 
 ```bash
-npx vercel          # first run: log in, then press Enter through the prompts
-npx vercel --prod   # publish
+git add -A && git commit -m "what changed" && git push
 ```
 
-Vercel prints your live URL. In the dashboard → your project → Settings →
-Domains, rename it to something clean like `juanitopascual.vercel.app`.
+It goes live in about a minute. There is nothing to deploy and nothing to log
+into.
 
-**Do this before making QR codes** — see the warning below.
-
-Then paste that final URL into `qr.siteUrl` at the bottom of `config.js`.
+The repo is public, which is what free GitHub Pages requires. There are no
+passwords or keys in it — just the page and the QR script.
 
 ### Make the QR codes
 
@@ -95,7 +99,7 @@ which one.
 Edit `config.js`, then:
 
 ```bash
-npx vercel --prod
+git add -A && git commit -m "updated prices" && git push
 ```
 
 The URL stays the same, so **printed QR codes keep working.** Change prices, add

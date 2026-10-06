@@ -142,7 +142,7 @@ window.SITE = {
      TODO: replace siteUrl with the real Vercel URL once deployed.
      Everything else is already correct.                      */
   qr: {
-    siteUrl: "https://TODO-REPLACE-WITH-VERCEL-URL",
+    siteUrl: "https://mjg-music.github.io/juanito-merch/",
     codes: [
       { file: "booth",  label: "Merch &amp; mailing list", use: "siteUrl" },
       { file: "email",  label: "Join the mailing list",    url: "https://juanitopascual.com/contact" },
