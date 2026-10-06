@@ -71,11 +71,12 @@
   // the right code. Degrades gracefully if any field is missing.
   if (S.show) {
     var where = [S.show.venue, S.show.city].filter(Boolean).join(' &middot; ');
-    var when = [S.show.date, S.show.time].filter(Boolean).join(' &middot; ');
-    if (where || when) {
+    var dates = (S.show.dates || []).filter(Boolean);
+    if (where || dates.length) {
       html += '<p class="eyebrow">' +
         (where ? '<span>' + where + '</span>' : '') +
-        (when ? '<span>' + when + '</span>' : '') + '</p>';
+        dates.map(function (d) { return '<span>' + d + '</span>'; }).join('') +
+        '</p>';
     }
   }
 

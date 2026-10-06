@@ -36,8 +36,11 @@ window.SITE = {
   show: {
     venue: "Granada Theater",
     city: "Minneapolis, MN",
-    date: "Saturday, October 10",
-    time: "8 PM",
+    // Two performances. Add or remove lines freely.
+    dates: [
+      "Sat Oct 10 &middot; 8 PM",
+      "Sun Oct 11 &middot; 4 PM"
+    ],
     // Eventbrite listing. Shown in the links row at the bottom
     // so people can send it to a friend. Set to "" to hide.
     ticketUrl: "https://www.eventbrite.com/e/juanito-pascual-trio-a-flamenco-celebration-of-jimi-hendrix-tickets-1990615820505"
