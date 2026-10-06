@@ -55,6 +55,19 @@ const entries = (cfg.codes || []).map(c => ({
   url: c.use === 'siteUrl' ? siteUrl : c.url
 }));
 
+// Once a PayPal.Me username exists in config.js, its QR code builds itself.
+const ppUser = String(SITE.paypalUsername || '').trim()
+  .replace(/^@/, '').replace(/^https?:\/\//, '')
+  .replace(/^(www\.)?paypal\.me\//i, '').replace(/\/+$/, '');
+
+if (ppUser && !entries.some(e => e.file === 'paypal')) {
+  entries.push({
+    file: 'paypal',
+    label: 'Pay by PayPal',
+    url: 'https://paypal.me/' + ppUser
+  });
+}
+
 const ready = entries.filter(e => !isTodo(e.url));
 const blocked = entries.filter(e => isTodo(e.url));
 

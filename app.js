@@ -30,6 +30,22 @@
 
   function icon(id) { return ICONS[id] || ICONS.generic; }
 
+  /* --- PayPal: one username turns the copy row into a real button -------- */
+  var ppUser = String(S.paypalUsername || '').trim()
+    // Tolerate someone pasting the whole link or an @ by mistake.
+    .replace(/^@/, '').replace(/^https?:\/\//, '').replace(/^(www\.)?paypal\.me\//i, '')
+    .replace(/\/+$/, '');
+
+  if (ppUser) {
+    (S.payments || []).forEach(function (p) {
+      if (p.id !== 'paypal') return;
+      p.type = 'link';
+      p.sub = 'Card or PayPal balance';
+      p.url = 'https://paypal.me/' + ppUser;
+      delete p.value;
+    });
+  }
+
   var html = '';
 
   /* --- Setup warnings, visible only while placeholders remain ------------ */

@@ -8,6 +8,23 @@
 
 window.SITE = {
 
+  /* ============================================================
+     >>> PASTE JUANITO'S PAYPAL.ME USERNAME HERE WHEN HE TEXTS IT <<<
+
+     Just the username, nothing else. No "@", no "paypal.me/", no https.
+     If his link is  https://paypal.me/juanitopascual
+     then put       "juanitopascual"
+
+     Filling this in does three things on its own:
+       1. PayPal becomes a real tappable button on the page
+       2. His email address comes off the page entirely
+       3. `npm run qr` starts building a PayPal QR code too
+
+     Leave it as "" until then and the page shows his email with a
+     Copy button instead, which still works fine.
+     ============================================================ */
+  paypalUsername: "",
+
   /* --- Header ------------------------------------------------ */
   artist: "Juanito Pascual",
   tagline: "Merch &amp; Mailing List",
