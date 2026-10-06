@@ -1,6 +1,7 @@
 # Juanito Pascual — merch booth page
 
 **Live: <https://mjg-music.github.io/juanito-merch/>**
+**Juanito's print page: <https://mjg-music.github.io/juanito-merch/print/>**
 
 One page on a phone. People scan a QR code at the booth, see what's for sale and
 what it costs, pay however they like, and join the mailing list.
@@ -84,10 +85,12 @@ A `paypal` code gets added automatically once his PayPal.Me link is in `config.j
 For each one you get `name.svg` (vector, for print), `name-print.png` (2400px,
 large signs), and `name-screen.png` (600px, for Instagram or a text).
 
-Plus **`print-sheet.html`** — this is the one to start with. Open it in a
-browser, press **Cmd+P**, choose *Save as PDF*. You get a full-page table tent
-for each code, then a page of six hand-out cards for the main booth code. Print
-the cards on cardstock and cut the dashed lines.
+Everything lands in `print/`, which is part of the site. That means
+**<https://mjg-music.github.io/juanito-merch/print/> is Juanito's own page** —
+send him that link and he can print his own signs from a phone or laptop,
+forever, without asking anyone. One button prints a full-page table tent for
+each code plus a page of six hand-out cards; the download links give him the
+image files for a print shop.
 
 If a URL is still a placeholder, that code is skipped and the script tells you
 which one.

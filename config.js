@@ -144,10 +144,16 @@ window.SITE = {
   qr: {
     siteUrl: "https://mjg-music.github.io/juanito-merch/",
     codes: [
-      { file: "booth",  label: "Merch &amp; mailing list", use: "siteUrl" },
-      { file: "email",  label: "Join the mailing list",    url: "https://juanitopascual.com/contact" },
-      { file: "venmo",  label: "Pay by Venmo",             url: "https://venmo.com/u/Juanito-Pascual" }
-      // PayPal code gets added here once he has a PayPal.Me username.
+      { file: "booth", label: "Merch &amp; mailing list",
+        note: "The main one. Put this on the table \u2014 it opens the page with prices, payment and the mailing list.",
+        use: "siteUrl" },
+      { file: "email", label: "Join the mailing list",
+        note: "Goes straight to the sign-up on juanitopascual.com.",
+        url: "https://juanitopascual.com/contact" },
+      { file: "venmo", label: "Pay by Venmo",
+        note: "Opens Venmo so someone can pay you directly.",
+        url: "https://venmo.com/u/Juanito-Pascual" }
+      // The PayPal code adds itself once paypalUsername is filled in at the top.
     ]
   }
 };
