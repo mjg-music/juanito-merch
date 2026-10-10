@@ -57,6 +57,7 @@ const isTodo = u => !u || !/^https?:\/\//.test(u) || /TODO/i.test(u);
 const entries = (cfg.codes || []).map(c => ({
   file: c.file,
   label: c.label,
+  sub: c.sub,
   note: c.note,
   url: c.use === 'siteUrl' ? siteUrl : c.url
 }));
@@ -70,6 +71,7 @@ if (ppUser && !entries.some(e => e.file === 'paypal')) {
   entries.push({
     file: 'paypal',
     label: 'Pay by PayPal',
+    sub: 'Card or PayPal balance',
     note: 'Opens PayPal to send money.',
     url: 'https://paypal.me/' + ppUser
   });
@@ -105,14 +107,17 @@ const pretty = u => u.replace(/^https?:\/\//, '').replace(/\/$/, '');
 function page(codes) {
   const artist = plain(SITE.artist || '');
   const show = SITE.show || {};
-  const showLine = [plain(show.venue), (show.dates || []).map(plain).join('  ·  ')]
-    .filter(Boolean).join('  ·  ');
+  const showLine = show.onSigns
+    ? [plain(show.venue), (show.dates || []).map(plain).join('  ·  ')]
+        .filter(Boolean).join('  ·  ')
+    : '';
 
   const card = c => `
     <section class="code">
       <div class="qrbox">${c.svg}</div>
       <div class="meta">
         <h2>${c.label}</h2>
+        ${c.sub ? `<p class="subline">${c.sub}</p>` : ''}
         ${c.note ? `<p class="note">${c.note}</p>` : ''}
         <p class="url">${pretty(c.url)}</p>
         <div class="dl">
@@ -124,21 +129,26 @@ function page(codes) {
 
   const tent = c => `
   <div class="sheet tent">
-    <h1>${artist}</h1>
-    ${showLine ? `<p class="where">${showLine}</p>` : ''}
+    <div class="head">
+      <h1>${c.label}</h1>
+      ${c.sub ? `<p class="sub">${c.sub}</p>` : ''}
+    </div>
     <div class="qr">${c.svg}</div>
-    <p class="cap">${c.label}</p>
-    <p class="scan">Scan with your phone camera</p>
-    <p class="link">${pretty(c.url)}</p>
+    <div class="foot">
+      <p class="scan">Scan with your phone camera</p>
+      <p class="who">${artist}</p>
+      ${showLine ? `<p class="where">${showLine}</p>` : ''}
+      <p class="link">${pretty(c.url)}</p>
+    </div>
   </div>`;
 
   const main = codes[0];
   const cards = `
   <div class="sheet cards">
     ${Array.from({ length: 6 }).map(() => `<div class="handcard">
-      <div class="name">${artist}</div>
-      <div class="qr">${main.svg}</div>
       <div class="cap">${main.label}</div>
+      <div class="qr">${main.svg}</div>
+      <div class="name">${artist}</div>
       <div class="link">${pretty(main.url)}</div>
     </div>`).join('')}
   </div>`;
@@ -223,7 +233,8 @@ function page(codes) {
   }
   .qrbox svg{width:100%;height:100%;display:block}
   .meta{flex:1;min-width:0}
-  .meta h2{font-size:19px;font-weight:600;margin:0 0 4px;line-height:1.25}
+  .meta h2{font-size:19px;font-weight:600;margin:0 0 2px;line-height:1.25}
+  .subline{font-size:14px;color:var(--gold-bright);margin:0 0 6px;line-height:1.4}
   .note{font-size:14px;color:var(--muted);margin:0 0 6px;line-height:1.45}
   .url{
     font-size:13px;color:var(--rose-soft);margin:0 0 12px;
@@ -263,20 +274,25 @@ function page(codes) {
 
     .tent{
       height:9.9in;border:2px solid #111;border-radius:18px;
-      padding:0.45in 0.4in;text-align:center;
+      padding:0.42in 0.34in;text-align:center;
       display:flex;flex-direction:column;align-items:center;
-      justify-content:center;gap:0.2in;
+      justify-content:space-between;
     }
+    .tent .head,.tent .foot{width:100%;flex:none}
     .tent h1{
-      font-family:var(--display);font-size:42pt;font-weight:600;
-      line-height:1;margin:0;color:#111;
+      font-family:var(--display);font-size:48pt;font-weight:600;
+      line-height:1.02;margin:0;color:#111;text-wrap:balance;
     }
-    .tent .where{font-size:12pt;margin:0;color:#5a3a44;letter-spacing:.02em}
-    .tent .qr{width:4.3in;height:4.3in}
+    .tent .sub{font-size:17pt;line-height:1.25;margin:0.1in 0 0;color:#333}
+    .tent .qr{width:4.5in;height:4.5in;flex:none}
     .tent .qr svg{width:100%;height:100%;display:block}
-    .tent .cap{font-size:17pt;font-weight:600;margin:0;color:#111}
-    .tent .scan{font-size:11pt;margin:0;color:#444}
-    .tent .link{font-size:9.5pt;color:#777;margin:0}
+    .tent .scan{font-size:16pt;font-weight:600;margin:0 0 0.14in;color:#111}
+    .tent .who{
+      font-family:var(--display);font-size:20pt;font-weight:600;
+      margin:0;color:#111;
+    }
+    .tent .where{font-size:11pt;margin:0.03in 0 0;color:#5a3a44;letter-spacing:.02em}
+    .tent .link{font-size:9pt;color:#777;margin:0.07in 0 0}
 
     .cards{
       height:9.9in;display:grid;
@@ -287,11 +303,14 @@ function page(codes) {
       display:flex;flex-direction:column;align-items:center;
       justify-content:center;gap:6px;
     }
-    .handcard .name{font-family:var(--display);font-size:14pt;font-weight:600;line-height:1}
-    .handcard .qr{width:1.7in;height:1.7in}
+    .handcard .cap{
+      font-family:var(--display);font-size:15pt;font-weight:600;
+      line-height:1.05;color:#111;text-wrap:balance;
+    }
+    .handcard .qr{width:1.6in;height:1.6in}
     .handcard .qr svg{width:100%;height:100%;display:block}
-    .handcard .cap{font-size:7.5pt;color:#333;line-height:1.3}
-    .handcard .link{font-size:6pt;color:#888;word-break:break-all}
+    .handcard .name{font-size:9pt;color:#333;line-height:1.2}
+    .handcard .link{font-size:6.5pt;color:#888;word-break:break-all}
   }
 </style>
 </head>
@@ -350,7 +369,7 @@ ${cards}
     fs.writeFileSync(path.join(OUT, `${e.file}.svg`), svg);
     await QRCode.toFile(path.join(OUT, `${e.file}-print.png`), e.url, { ...opts, width: 2400 });
     await QRCode.toFile(path.join(OUT, `${e.file}-screen.png`), e.url, { ...opts, width: 600 });
-    built.push({ ...e, svg, label: plain(e.label), note: plain(e.note) });
+    built.push({ ...e, svg, label: plain(e.label), sub: plain(e.sub), note: plain(e.note) });
   }
 
   fs.writeFileSync(path.join(OUT, 'index.html'), page(built));

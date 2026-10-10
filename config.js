@@ -41,6 +41,10 @@ window.SITE = {
       "Sat Oct 10 &middot; 8 PM",
       "Sun Oct 11 &middot; 4 PM"
     ],
+    // The printed signs leave the dates OFF by default, so the same sign
+    // works at every gig forever. Only this web page carries the dates,
+    // and you can change them here any time. Set true to print them too.
+    onSigns: false,
     // Eventbrite listing. Shown in the links row at the bottom
     // so people can send it to a friend. Set to "" to hide.
     ticketUrl: "https://www.eventbrite.com/e/juanito-pascual-trio-a-flamenco-celebration-of-jimi-hendrix-tickets-1990615820505"
@@ -75,11 +79,13 @@ window.SITE = {
       ]
     },
     {
-      heading: "New Album Presale",
-      // Set `soon: true` to show a muted "more info soon" row
-      // instead of a price. Flip to options + price when ready.
+      // No presale this run — the album is here to point people at the
+      // mailing list. Flip `soon` off and add options + price when it's
+      // actually for sale.
+      heading: "New Album",
       soon: true,
-      soonNote: "Gold &amp; Rose &mdash; details coming soon"
+      soonNote: "Gold &amp; Rose &mdash; out February 2027. " +
+                "Join the mailing list below to hear first."
     }
     // T-SHIRTS: when they exist, copy the Method Book block above,
     // change the heading to "T-Shirts" and list sizes + price.
@@ -128,7 +134,7 @@ window.SITE = {
 
   /* --- Secondary links (optional) ---------------------------- */
   links: [
-    { label: "Tonight's show",     url: "https://www.eventbrite.com/e/juanito-pascual-trio-a-flamenco-celebration-of-jimi-hendrix-tickets-1990615820505" },
+    { label: "Tickets",            url: "https://www.eventbrite.com/e/juanito-pascual-trio-a-flamenco-celebration-of-jimi-hendrix-tickets-1990615820505" },
     { label: "Instagram",          url: "https://instagram.com/jpas.guitar" },
     { label: "YouTube",            url: "https://youtube.com/@juanitopascual1" },
     { label: "juanitopascual.com", url: "https://juanitopascual.com" }
@@ -143,14 +149,22 @@ window.SITE = {
      Everything else is already correct.                      */
   qr: {
     siteUrl: "https://mjg-music.github.io/juanito-merch/",
+    /* Each entry below becomes one printed sign.
+         label  the BIG headline across the top of the sign — keep it to a
+                few words, it is what someone reads walking past
+         sub    the smaller line under the headline
+         note   only appears on your own print page, not on the sign       */
     codes: [
-      { file: "booth", label: "Merch &amp; mailing list",
+      { file: "booth", label: "Merch &amp; Mailing List",
+        sub: "Prices, how to pay, and the mailing list",
         note: "The main one. Put this on the table \u2014 it opens the page with prices, payment and the mailing list.",
         use: "siteUrl" },
-      { file: "email", label: "Join the mailing list",
+      { file: "email", label: "Join the Mailing List",
+        sub: "Tour dates and new releases",
         note: "Goes straight to the sign-up on juanitopascual.com.",
         url: "https://juanitopascual.com/contact" },
       { file: "venmo", label: "Pay by Venmo",
+        sub: "@Juanito-Pascual",
         note: "Opens Venmo so someone can pay you directly.",
         url: "https://venmo.com/u/Juanito-Pascual" }
       // The PayPal code adds itself once paypalUsername is filled in at the top.
