@@ -59,7 +59,11 @@ const entries = (cfg.codes || []).map(c => ({
   label: c.label,
   sub: c.sub,
   note: c.note,
-  url: c.use === 'siteUrl' ? siteUrl : c.url
+  // `anchor` lands a siteUrl code partway down the page, e.g. anchor:"pay"
+  // opens the booth page scrolled to the payment options.
+  url: c.use === 'siteUrl'
+    ? siteUrl + (c.anchor ? '#' + String(c.anchor).replace(/^#/, '') : '')
+    : c.url
 }));
 
 // Once a PayPal.Me username exists in config.js, its QR code builds itself.

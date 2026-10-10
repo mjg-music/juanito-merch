@@ -147,7 +147,9 @@
   });
 
   if (pays.length) {
-    html += '<p class="label">How to pay</p><div class="stack">';
+    // id="pay" is what the printed "Pay Here" code points at (siteUrl#pay),
+    // so someone with their wallet out lands on the options, not the top.
+    html += '<p class="label" id="pay">How to pay</p><div class="stack">';
 
     pays.forEach(function (p) {
       var inner = '<span class="ico" aria-hidden="true">' + icon(p.id) + '</span>' +

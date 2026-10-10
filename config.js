@@ -112,7 +112,7 @@ window.SITE = {
       type: "copy",
       id: "paypal",
       label: "PayPal",
-      sub: "Send to this address",
+      sub: "Shows up as <b>Three Columns Music</b>",
       value: "jp@jpascual.com"
     },
     {
@@ -178,10 +178,13 @@ window.SITE = {
         sub: "Tour dates and new releases",
         note: "Goes straight to the sign-up on juanitopascual.com.",
         url: "https://juanitopascual.com/contact#mailing_list_feature_436168" },
-      { file: "venmo", label: "Pay Here",
-        sub: "Venmo &middot; @Juanito-Pascual",
-        note: "Opens Venmo so someone can pay you directly.",
-        url: "https://venmo.com/u/Juanito-Pascual" }
+      { file: "pay", label: "Pay Here",
+        sub: "Venmo, PayPal, cash or check",
+        note: "Opens the page scrolled to the payment options, so the buyer picks \u2014 nobody is forced into Venmo.",
+        use: "siteUrl", anchor: "pay" }
+      // Want a code that jumps STRAIGHT into Venmo as well? Add this line:
+      //   { file: "venmo", label: "Pay by Venmo", sub: "@Juanito-Pascual",
+      //     note: "Opens Venmo directly.", url: "https://venmo.com/u/Juanito-Pascual" }
       // The PayPal code adds itself once paypalUsername is filled in at the top.
     ]
   }
