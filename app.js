@@ -30,18 +30,28 @@
 
   function icon(id) { return ICONS[id] || ICONS.generic; }
 
-  /* --- PayPal: one username turns the copy row into a real button -------- */
-  var ppUser = String(S.paypalUsername || '').trim()
-    // Tolerate someone pasting the whole link or an @ by mistake.
-    .replace(/^@/, '').replace(/^https?:\/\//, '').replace(/^(www\.)?paypal\.me\//i, '')
-    .replace(/\/+$/, '');
+  /* --- PayPal: one pasted value turns the copy row into a real button ----
+     Accepts whichever thing Juanito sends: a PayPal.Me username, or the link
+     behind the QR code the PayPal app makes for him. Anything else PayPal
+     offers (the old cgi-bin buttons, the new script-based buttons) is either
+     deprecated or needs a third-party script, so it is not an option here. */
+  var ppRaw = String(S.paypalLink || S.paypalUsername || '').trim();
+  var ppUrl = '';
+  if (/^https?:\/\//i.test(ppRaw) || /paypal\.com\//i.test(ppRaw)) {
+    // A whole link — use it as given.
+    ppUrl = /^https?:\/\//i.test(ppRaw) ? ppRaw : 'https://' + ppRaw;
+  } else if (ppRaw) {
+    // A username — tolerate an @ or a pasted paypal.me/ prefix.
+    var ppUser = ppRaw.replace(/^@/, '').replace(/^(www\.)?paypal\.me\//i, '')
+      .replace(/\/+$/, '');
+    if (ppUser) ppUrl = 'https://paypal.me/' + ppUser;
+  }
 
-  if (ppUser) {
+  if (ppUrl) {
     (S.payments || []).forEach(function (p) {
       if (p.id !== 'paypal') return;
       p.type = 'link';
-      p.sub = 'Card or PayPal balance';
-      p.url = 'https://paypal.me/' + ppUser;
+      p.url = ppUrl;
       delete p.value;
     });
   }

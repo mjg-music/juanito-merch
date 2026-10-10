@@ -23,18 +23,23 @@ From Juanito's notes, all of this is **done** in `config.js`:
 
 ## What's still needed
 
-### 1. A PayPal.Me username — Juanito has to do this
+### 1. A tap-to-pay PayPal link — Juanito has to do this
 
-`jp@jpascual.com` is an email address, and **PayPal links only work from a
-username.** PayPal doesn't create one automatically, so there's no way to make a
-PayPal button or QR code from an email alone.
+`jp@jpascual.com` is an email address, and PayPal has no link that opens a
+payment from an email alone. Two minutes in your PayPal app fixes it, and
+either of these works:
 
-**Juanito:** go to <https://paypal.me/my/settings>, click Create, and pick a
-username (`juanitopascual` if it's free). Takes about two minutes. Send Mike the
-link it gives you.
+- **A PayPal.Me username.** Go to <https://paypal.me/my/settings>, tap Create,
+  pick a name (`juanitopascual` if it's free). Send Mike the link it gives you.
+- **Or a PayPal QR code.** In the PayPal Business app: **More → Get paid with
+  QR codes**. Save the image and text it to Mike.
 
-Until then the page shows the PayPal address with a **Copy** button, so people
-can still send money manually — it just takes them a few more taps.
+Mike pastes whichever you send into one spot in `config.js`, and PayPal becomes
+a real button on the page — like Venmo — plus a printed sign of its own.
+
+Until then the page shows the PayPal address with a **Copy** button, and notes
+that it shows up as **Three Columns Music**, so nobody wonders if they've got
+the right account.
 
 ### 2. T-shirts — if they're happening
 
@@ -80,7 +85,7 @@ It reads the URLs straight out of `config.js` and builds **three** codes:
 | `email` | the mailing-list signup, straight to his site |
 | `venmo` | his Venmo profile |
 
-A `paypal` code gets added automatically once his PayPal.Me link is in `config.js`.
+A `paypal` code gets added automatically once `paypalLink` in `config.js` is filled in.
 
 For each one you get `name.svg` (vector, for print), `name-print.png` (2400px,
 large signs), and `name-screen.png` (600px, for Instagram or a text).
@@ -126,7 +131,8 @@ it and a gold **JP** monogram shows instead; it looks intentional, so no rush.
 - [ ] Red setup notice is gone from the page
 - [ ] Prices on the page match what he's actually charging
 - [ ] Tapped the Venmo button on a real phone — opens the app on *his* profile
-- [ ] Tapped Copy on the PayPal row — the address actually copies
+- [ ] PayPal row: Copy puts the address on the clipboard — or, once `paypalLink`
+      is filled, the button opens PayPal with Juanito as the recipient
 - [ ] Mailing-list button lands on the signup section, not a 404
 - [ ] Scanned each **printed** code from three feet away in dim light
 - [ ] Looked at the page on an iPhone and an Android

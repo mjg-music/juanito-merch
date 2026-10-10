@@ -9,21 +9,31 @@
 window.SITE = {
 
   /* ============================================================
-     >>> PASTE JUANITO'S PAYPAL.ME USERNAME HERE WHEN HE TEXTS IT <<<
+     >>> PASTE WHATEVER JUANITO SENDS FOR PAYPAL HERE <<<
 
-     Just the username, nothing else. No "@", no "paypal.me/", no https.
-     If his link is  https://paypal.me/juanitopascual
-     then put       "juanitopascual"
+     Either of these works — just paste it between the quotes:
+
+       1. His PayPal.Me username.  If his link is paypal.me/juanitopascual
+          put  "juanitopascual"   (the whole link is fine too)
+
+       2. The link behind the QR code the PayPal app makes for him.
+          In the PayPal Business app: More → Get paid with QR codes.
+          Text Mike the saved image; he'll pull the link out of it.
 
      Filling this in does three things on its own:
-       1. PayPal becomes a real tappable button on the page
-       2. His email address comes off the page entirely
-       3. `npm run qr` starts building a PayPal QR code too
+       • PayPal becomes a real tappable button, like Venmo
+       • His email address comes off the page entirely
+       • `npm run qr` builds a "Pay by PayPal" sign too
 
-     Leave it as "" until then and the page shows his email with a
-     Copy button instead, which still works fine.
+     Leave it "" and the page shows his email with a Copy button, which
+     works but makes the buyer do the typing.
+
+     NOT options, in case anyone goes looking: PayPal's old cgi-bin
+     "Buy Now" links are deprecated and stop working in early 2027, and
+     the new ones need a PayPal script loaded into the page, which this
+     page never does. Both would be a dead payment link at a booth.
      ============================================================ */
-  paypalUsername: "",
+  paypalLink: "",
 
   /* --- Header ------------------------------------------------ */
   artist: "Juanito Pascual",
@@ -103,12 +113,8 @@ window.SITE = {
       url: "https://venmo.com/u/Juanito-Pascual"
     },
     {
-      // TODO: PayPal.Me links need a USERNAME, not an email address.
-      // Juanito: go to https://paypal.me/my/settings and claim one
-      // (takes 2 min), then replace this whole block with:
-      //   { type:"link", id:"paypal", label:"PayPal",
-      //     sub:"Card or PayPal balance",
-      //     url:"https://paypal.me/HIS-NEW-USERNAME" }
+      // Becomes a real button by itself once paypalLink (top of this
+      // file) is filled in. Nothing to change here.
       type: "copy",
       id: "paypal",
       label: "PayPal",
@@ -185,7 +191,7 @@ window.SITE = {
       // Want a code that jumps STRAIGHT into Venmo as well? Add this line:
       //   { file: "venmo", label: "Pay by Venmo", sub: "@Juanito-Pascual",
       //     note: "Opens Venmo directly.", url: "https://venmo.com/u/Juanito-Pascual" }
-      // The PayPal code adds itself once paypalUsername is filled in at the top.
+      // The PayPal code adds itself once paypalLink is filled in at the top.
     ]
   }
 };

@@ -66,18 +66,24 @@ const entries = (cfg.codes || []).map(c => ({
     : c.url
 }));
 
-// Once a PayPal.Me username exists in config.js, its QR code builds itself.
-const ppUser = String(SITE.paypalUsername || '').trim()
-  .replace(/^@/, '').replace(/^https?:\/\//, '')
-  .replace(/^(www\.)?paypal\.me\//i, '').replace(/\/+$/, '');
+// Once paypalLink in config.js holds a username or a link, a PayPal sign
+// builds itself. Same rules as app.js so the page and the sign agree.
+const ppRaw = String(SITE.paypalLink || SITE.paypalUsername || '').trim();
+let ppUrl = '';
+if (/^https?:\/\//i.test(ppRaw) || /paypal\.com\//i.test(ppRaw)) {
+  ppUrl = /^https?:\/\//i.test(ppRaw) ? ppRaw : 'https://' + ppRaw;
+} else if (ppRaw) {
+  const u = ppRaw.replace(/^@/, '').replace(/^(www\.)?paypal\.me\//i, '').replace(/\/+$/, '');
+  if (u) ppUrl = 'https://paypal.me/' + u;
+}
 
-if (ppUser && !entries.some(e => e.file === 'paypal')) {
+if (ppUrl && !entries.some(e => e.file === 'paypal')) {
   entries.push({
     file: 'paypal',
     label: 'Pay by PayPal',
-    sub: 'Card or PayPal balance',
-    note: 'Opens PayPal to send money.',
-    url: 'https://paypal.me/' + ppUser
+    sub: 'Shows up as Three Columns Music',
+    note: 'Opens PayPal with Juanito already filled in as who gets paid.',
+    url: ppUrl
   });
 }
 

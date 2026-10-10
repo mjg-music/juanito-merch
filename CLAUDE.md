@@ -62,13 +62,25 @@ README.md      Setup steps written for Juanito, not for an engineer.
 
 - **Venmo** — `@Juanito-Pascual`, linked as `https://venmo.com/u/Juanito-Pascual`.
   The `/u/` form is the current profile-link format. Works as a link and as a QR.
-- **PayPal** — he has `jp@jpascual.com`, which is an **email, not a username**.
-  PayPal.Me links require a username and PayPal does not auto-create one, so
-  **no PayPal link or QR code can exist yet.** Until he claims one at
-  <https://paypal.me/my/settings>, the page renders PayPal as a `type: "copy"`
-  row: the address shown as selectable text with a Copy button. When he has a
-  username, swap that block for a `type: "link"` and add a `paypal` entry to
-  `qr.codes`. The `config.js` comment spells this out.
+- **PayPal** — he has `jp@jpascual.com`, which is an **email, not a username**,
+  and in PayPal it resolves to the business name **Three Columns Music**. No
+  tap-to-pay PayPal link can exist until Juanito does one of two things (each
+  ~2 min): claim a PayPal.Me username at <https://paypal.me/my/settings>, or
+  make an in-person QR code in the PayPal Business app (More → Get paid with
+  QR codes) and send the image. Either value goes in `paypalLink` at the top of
+  `config.js`; that single switch flips the row from `type: "copy"` to a real
+  button *and* makes `npm run qr` build a `paypal` sign. Until then the row
+  shows the address with a Copy button and says it shows up as Three Columns
+  Music, so the buyer isn't thrown by an unfamiliar name at checkout.
+
+  **Dead ends, verified Oct 2026 — don't re-try them:** the legacy
+  `paypal.com/cgi-bin/webscr?cmd=_xclick&business=EMAIL` link does take an
+  email, but PayPal deprecated it in Jan 2026 and it stops working around
+  Jan 2027 — a printed sign would outlive the link. PayPal's replacement
+  ("Payment Links & Buttons") needs a PayPal script loaded into the page,
+  which violates the zero-third-party-requests rule. PayPal blocks headless
+  browsers with a captcha, so neither can be verified from a script anyway —
+  a real phone tap is the only test that counts.
 - **Cash and check** — `type: "info"` rows. No button, no link; just the
   instruction, with the check payee in bold.
 
@@ -175,7 +187,8 @@ npx vercel --prod                    # deploy
 - [ ] Every `TODO` in `config.js` replaced; red setup banner gone from the page.
 - [ ] Prices on the page match what Juanito is actually charging that night.
 - [ ] Venmo button tapped on a real phone — opens the app on *his* profile.
-- [ ] PayPal address copies correctly (or is a real link, if he claimed a username).
+- [ ] PayPal: Copy puts `jp@jpascual.com` on the clipboard — or, if `paypalLink`
+      is filled, the button opens PayPal with him as the recipient.
 - [ ] Mailing-list button lands on the signup section, not a 404.
 - [ ] Each printed code scanned in dim light from three feet.
 - [ ] Page checked on both an iPhone and an Android.
