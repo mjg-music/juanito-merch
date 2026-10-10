@@ -98,7 +98,10 @@ const opts = {
   color: { dark: '#000000', light: '#FFFFFF' }
 };
 
-const pretty = u => u.replace(/^https?:\/\//, '').replace(/\/$/, '');
+// The printed URL is a fallback for someone typing it by hand, and nobody
+// hand-types an anchor. The QR still carries the full link including #...,
+// so the code lands on the sign-up box while the text stays typeable.
+const pretty = u => u.replace(/^https?:\/\//, '').replace(/#.*$/, '').replace(/\/$/, '');
 
 /* --- the page ----------------------------------------------------------
    One document doing two jobs: a download page on screen, and the actual

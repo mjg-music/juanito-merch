@@ -44,10 +44,8 @@ window.SITE = {
     // The printed signs leave the dates OFF by default, so the same sign
     // works at every gig forever. Only this web page carries the dates,
     // and you can change them here any time. Set true to print them too.
-    onSigns: false,
-    // Eventbrite listing. Shown in the links row at the bottom
-    // so people can send it to a friend. Set to "" to hide.
-    ticketUrl: "https://www.eventbrite.com/e/juanito-pascual-trio-a-flamenco-celebration-of-jimi-hendrix-tickets-1990615820505"
+    onSigns: false
+    // The ticket link lives in `links:` further down, not here.
   },
 
   // Square photo at assets/portrait.jpg (~800x800).
@@ -147,7 +145,11 @@ window.SITE = {
 
   /* --- Secondary links (optional) ---------------------------- */
   links: [
-    { label: "Tickets",            url: "https://www.eventbrite.com/e/juanito-pascual-trio-a-flamenco-celebration-of-jimi-hendrix-tickets-1990615820505" },
+    // Whoever scans this is already AT tonight's show, so the ticket link
+    // sells the NEXT one. Sunday is a separate Eventbrite event from
+    // Saturday — a different link, not one page with two dates on it.
+    // After Sunday, swap in the next show or delete this line.
+    { label: "Tickets &middot; Sun 4 PM", url: "https://www.eventbrite.com/e/juanito-pascual-trio-a-flamenco-celebration-of-jimi-hendrix-tickets-1990935879811" },
     { label: "Instagram",          url: "https://instagram.com/jpas.guitar" },
     { label: "YouTube",            url: "https://youtube.com/@juanitopascual1" },
     { label: "juanitopascual.com", url: "https://juanitopascual.com" }
@@ -172,12 +174,12 @@ window.SITE = {
         sub: "Prices, how to pay, and the mailing list",
         note: "The main one. Put this on the table \u2014 it opens the page with prices, payment and the mailing list.",
         use: "siteUrl" },
-      { file: "email", label: "Join the Mailing List",
+      { file: "email", label: "Join Juanito\u2019s Email List",
         sub: "Tour dates and new releases",
         note: "Goes straight to the sign-up on juanitopascual.com.",
         url: "https://juanitopascual.com/contact#mailing_list_feature_436168" },
-      { file: "venmo", label: "Pay by Venmo",
-        sub: "@Juanito-Pascual",
+      { file: "venmo", label: "Pay Here",
+        sub: "Venmo &middot; @Juanito-Pascual",
         note: "Opens Venmo so someone can pay you directly.",
         url: "https://venmo.com/u/Juanito-Pascual" }
       // The PayPal code adds itself once paypalUsername is filled in at the top.
