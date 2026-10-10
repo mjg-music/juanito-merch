@@ -101,6 +101,59 @@ const opts = {
 // The printed URL is a fallback for someone typing it by hand, and nobody
 // hand-types an anchor. The QR still carries the full link including #...,
 // so the code lands on the sign-up box while the text stays typeable.
+/* --- a standalone sign as one SVG file ---------------------------------
+   The download buttons used to hand over a bare QR code with no words on
+   it, so whatever Juanito printed from them was an unlabelled square. This
+   builds the whole sign — headline, code, the lot — into a single file.
+
+   Units are hundredths of an inch on US Letter, so 850x1100. Fonts are the
+   ones every machine already has: a webfont would not travel inside a file
+   he emails to a print shop.                                             */
+function xml(t) {
+  return String(t == null ? '' : t)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function signSvg(c) {
+  // Nest the generated code as an inner <svg>. Its own width/height have to
+  // come off first — repeating an attribute is an XML parse error, and the
+  // whole file then refuses to render.
+  const inner = c.svg
+    .replace(/<\?xml[^>]*\?>\s*/, '')
+    .replace(/<svg\b[^>]*>/, function (tag) {
+      return tag
+        .replace(/\s(?:width|height|x|y)="[^"]*"/g, '')
+        .replace('<svg', '<svg x="200" y="296" width="450" height="450"');
+    });
+
+  const label = plain(c.label);
+  // <text> cannot wrap, so shrink the headline rather than run off the page.
+  const size = Math.min(66, Math.round(730 / Math.max(1, label.length * 0.5)));
+
+  const line = (y, sz, fam, weight, fill, txt) => txt
+    ? `  <text x="425" y="${y}" text-anchor="middle" font-family="${fam}" ` +
+      `font-size="${sz}" font-weight="${weight}" fill="${fill}">${xml(txt)}</text>`
+    : '';
+
+  const SERIF = "Georgia, 'Times New Roman', Times, serif";
+  const SANS  = "Helvetica, Arial, sans-serif";
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="8.5in" height="11in"
+     viewBox="0 0 850 1100" role="img" aria-label="${xml(label)}">
+  <rect width="850" height="1100" fill="#ffffff"/>
+  <rect x="20" y="20" width="810" height="1060" rx="18"
+        fill="none" stroke="#111111" stroke-width="3"/>
+${line(168, size, SERIF, 600, '#111111', label)}
+${line(213, 24, SANS, 400, '#333333', plain(c.sub))}
+${inner}
+${line(872, 23, SANS, 700, '#111111', 'Scan with your phone camera')}
+${line(927, 28, SERIF, 600, '#111111', plain(SITE.artist || ''))}
+${line(967, 13, SANS, 400, '#777777', pretty(c.url))}
+</svg>
+`;
+}
+
 const pretty = u => u.replace(/^https?:\/\//, '').replace(/#.*$/, '').replace(/\/$/, '');
 
 /* --- the page ----------------------------------------------------------
@@ -124,14 +177,14 @@ function page(codes) {
         ${c.note ? `<p class="note">${c.note}</p>` : ''}
         <p class="url">${pretty(c.url)}</p>
         <div class="dl">
-          <a class="btn" href="${c.file}-print.png" download>Download image</a>
-          <a class="btn ghost" href="${c.file}.svg" download>For a print shop</a>
+          <button class="btn" type="button" onclick="printOne('${c.file}')">Print this sign</button>
+          <a class="btn ghost" href="${c.file}-sign.svg" download>Save as a file</a>
         </div>
       </div>
     </section>`;
 
   const tent = c => `
-  <div class="sheet tent">
+  <div class="sheet tent" data-file="${c.file}">
     <div class="head">
       <h1>${c.label}</h1>
       ${c.sub ? `<p class="sub">${c.sub}</p>` : ''}
@@ -147,7 +200,7 @@ function page(codes) {
 
   const main = codes[0];
   const cards = `
-  <div class="sheet cards">
+  <div class="sheet cards" data-file="cards">
     ${Array.from({ length: 6 }).map(() => `<div class="handcard">
       <div class="cap">${main.label}</div>
       <div class="qr">${main.svg}</div>
@@ -274,6 +327,9 @@ function page(codes) {
 
     .sheet{page-break-after:always;break-after:page}
     .sheet:last-child{page-break-after:auto;break-after:auto}
+    /* "Print this sign" hides every other sheet for the one print job. */
+    .sheet.skip{display:none!important}
+    .sheet.skip + .sheet{page-break-before:avoid;break-before:avoid}
 
     .tent{
       height:9.9in;border:2px solid #111;border-radius:18px;
@@ -327,16 +383,17 @@ function page(codes) {
   <div class="how">
     <h2>How to print</h2>
     <ol>
-      <li>Tap <b>Print all signs</b> below.</li>
-      <li>You'll get a big sign for the table, then a page of six small
-        cards to hand out.</li>
+      <li>Tap <b>Print all signs</b> below, or use <b>Print this sign</b>
+        next to any one code to print just that page.</li>
+      <li>Every sign comes out with its heading already on it &mdash; the big
+        words at the top say what the code is for.</li>
       <li>Card stock looks best, but regular paper works fine.</li>
       <li>To send it to a print shop instead, choose <b>Save as PDF</b> in the
         print window and email them the file.</li>
     </ol>
   </div>
 
-  <button class="print-all" type="button" onclick="window.print()">
+  <button class="print-all" type="button" onclick="printAll()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M6 9V3h12v6"/><rect x="3.5" y="9" width="17" height="7.5" rx="2"/>
@@ -346,6 +403,17 @@ function page(codes) {
   </button>
 
   ${codes.map(card).join('')}
+
+  <div class="code extra">
+    <div class="meta">
+      <h2>A page of small cards</h2>
+      <p class="note">Six little ones of the main code, to hand out or leave
+        on the table.</p>
+      <div class="dl">
+        <button class="btn" type="button" onclick="printOne('cards')">Print the cards</button>
+      </div>
+    </div>
+  </div>
 
   <footer>
     Before the show, scan a printed code with your phone from a few feet away
@@ -358,6 +426,21 @@ function page(codes) {
 ${codes.map(tent).join('')}
 ${cards}
 </div>
+
+<script>
+  var SHEETS = document.querySelectorAll('.sheet');
+  function show(only) {
+    SHEETS.forEach(function (s) {
+      s.classList.toggle('skip', !!only && s.dataset.file !== only);
+    });
+  }
+  // Always put every sheet back, so the next print is not silently cropped
+  // by whatever was clicked last.
+  function reset() { show(null); }
+  function printOne(file) { show(file); window.print(); }
+  function printAll() { reset(); window.print(); }
+  window.addEventListener('afterprint', reset);
+</script>
 
 </body></html>`;
 }
@@ -372,7 +455,10 @@ ${cards}
     fs.writeFileSync(path.join(OUT, `${e.file}.svg`), svg);
     await QRCode.toFile(path.join(OUT, `${e.file}-print.png`), e.url, { ...opts, width: 2400 });
     await QRCode.toFile(path.join(OUT, `${e.file}-screen.png`), e.url, { ...opts, width: 600 });
-    built.push({ ...e, svg, label: plain(e.label), sub: plain(e.sub), note: plain(e.note) });
+    const entry = { ...e, svg, label: plain(e.label), sub: plain(e.sub), note: plain(e.note) };
+    // The labelled, ready-to-print version — this is what the buttons hand over.
+    fs.writeFileSync(path.join(OUT, `${e.file}-sign.svg`), signSvg(entry));
+    built.push(entry);
   }
 
   fs.writeFileSync(path.join(OUT, 'index.html'), page(built));

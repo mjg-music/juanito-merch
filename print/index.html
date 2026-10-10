@@ -116,6 +116,9 @@
 
     .sheet{page-break-after:always;break-after:page}
     .sheet:last-child{page-break-after:auto;break-after:auto}
+    /* "Print this sign" hides every other sheet for the one print job. */
+    .sheet.skip{display:none!important}
+    .sheet.skip + .sheet{page-break-before:avoid;break-before:avoid}
 
     .tent{
       height:9.9in;border:2px solid #111;border-radius:18px;
@@ -169,16 +172,17 @@
   <div class="how">
     <h2>How to print</h2>
     <ol>
-      <li>Tap <b>Print all signs</b> below.</li>
-      <li>You'll get a big sign for the table, then a page of six small
-        cards to hand out.</li>
+      <li>Tap <b>Print all signs</b> below, or use <b>Print this sign</b>
+        next to any one code to print just that page.</li>
+      <li>Every sign comes out with its heading already on it &mdash; the big
+        words at the top say what the code is for.</li>
       <li>Card stock looks best, but regular paper works fine.</li>
       <li>To send it to a print shop instead, choose <b>Save as PDF</b> in the
         print window and email them the file.</li>
     </ol>
   </div>
 
-  <button class="print-all" type="button" onclick="window.print()">
+  <button class="print-all" type="button" onclick="printAll()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M6 9V3h12v6"/><rect x="3.5" y="9" width="17" height="7.5" rx="2"/>
@@ -197,8 +201,8 @@
         <p class="note">The main one. Put this on the table — it opens the page with prices, payment and the mailing list.</p>
         <p class="url">mjg-music.github.io/juanito-merch</p>
         <div class="dl">
-          <a class="btn" href="booth-print.png" download>Download image</a>
-          <a class="btn ghost" href="booth.svg" download>For a print shop</a>
+          <button class="btn" type="button" onclick="printOne('booth')">Print this sign</button>
+          <a class="btn ghost" href="booth-sign.svg" download>Save as a file</a>
         </div>
       </div>
     </section>
@@ -211,8 +215,8 @@
         <p class="note">Goes straight to the sign-up on juanitopascual.com.</p>
         <p class="url">juanitopascual.com/contact</p>
         <div class="dl">
-          <a class="btn" href="email-print.png" download>Download image</a>
-          <a class="btn ghost" href="email.svg" download>For a print shop</a>
+          <button class="btn" type="button" onclick="printOne('email')">Print this sign</button>
+          <a class="btn ghost" href="email-sign.svg" download>Save as a file</a>
         </div>
       </div>
     </section>
@@ -225,11 +229,22 @@
         <p class="note">Opens Venmo so someone can pay you directly.</p>
         <p class="url">venmo.com/u/Juanito-Pascual</p>
         <div class="dl">
-          <a class="btn" href="venmo-print.png" download>Download image</a>
-          <a class="btn ghost" href="venmo.svg" download>For a print shop</a>
+          <button class="btn" type="button" onclick="printOne('venmo')">Print this sign</button>
+          <a class="btn ghost" href="venmo-sign.svg" download>Save as a file</a>
         </div>
       </div>
     </section>
+
+  <div class="code extra">
+    <div class="meta">
+      <h2>A page of small cards</h2>
+      <p class="note">Six little ones of the main code, to hand out or leave
+        on the table.</p>
+      <div class="dl">
+        <button class="btn" type="button" onclick="printOne('cards')">Print the cards</button>
+      </div>
+    </div>
+  </div>
 
   <footer>
     Before the show, scan a printed code with your phone from a few feet away
@@ -240,7 +255,7 @@
 
 <div class="paper">
 
-  <div class="sheet tent">
+  <div class="sheet tent" data-file="booth">
     <div class="head">
       <h1>Merch & Mailing List</h1>
       <p class="sub">Prices, how to pay, and the mailing list</p>
@@ -254,7 +269,7 @@
       <p class="link">mjg-music.github.io/juanito-merch</p>
     </div>
   </div>
-  <div class="sheet tent">
+  <div class="sheet tent" data-file="email">
     <div class="head">
       <h1>Join Juanito’s Email List</h1>
       <p class="sub">Tour dates and new releases</p>
@@ -268,7 +283,7 @@
       <p class="link">juanitopascual.com/contact</p>
     </div>
   </div>
-  <div class="sheet tent">
+  <div class="sheet tent" data-file="venmo">
     <div class="head">
       <h1>Pay Here</h1>
       <p class="sub">Venmo · @Juanito-Pascual</p>
@@ -283,7 +298,7 @@
     </div>
   </div>
 
-  <div class="sheet cards">
+  <div class="sheet cards" data-file="cards">
     <div class="handcard">
       <div class="cap">Merch & Mailing List</div>
       <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
@@ -323,5 +338,20 @@
     </div>
   </div>
 </div>
+
+<script>
+  var SHEETS = document.querySelectorAll('.sheet');
+  function show(only) {
+    SHEETS.forEach(function (s) {
+      s.classList.toggle('skip', !!only && s.dataset.file !== only);
+    });
+  }
+  // Always put every sheet back, so the next print is not silently cropped
+  // by whatever was clicked last.
+  function reset() { show(null); }
+  function printOne(file) { show(file); window.print(); }
+  function printAll() { reset(); window.print(); }
+  window.addEventListener('afterprint', reset);
+</script>
 
 </body></html>
