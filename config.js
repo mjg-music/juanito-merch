@@ -126,11 +126,24 @@ window.SITE = {
   ],
 
   /* --- Email list --------------------------------------------
-     His own site already has an "Email List Sign-up" section,
-     so this points there. No form to build or maintain.      */
-  emailUrl: "https://juanitopascual.com/contact",
+     His own site already has an "Email List Sign-up" section, so this
+     points there. No form to build or maintain.
+
+     The #mailing_list_feature_436168 on the end jumps straight down to the
+     sign-up box, which otherwise sits a long way down that page. If he ever
+     rebuilds juanitopascual.com that tag may stop matching, and the link
+     just lands at the top of the contact page like it used to — nothing
+     breaks. Delete from the # onward to go back to that.          */
+  emailUrl: "https://juanitopascual.com/contact#mailing_list_feature_436168",
   emailLabel: "Join the mailing list",
   emailSub: "Tour dates and new releases",
+
+  /* Where the sign-up sits on the page.
+       true   at the TOP, above the prices — right while collecting
+              emails is the main goal of the night
+       false  back down below the payment buttons                  */
+  emailFirst: true,
+  emailHeading: "Stay in touch",
 
   /* --- Secondary links (optional) ---------------------------- */
   links: [
@@ -162,7 +175,7 @@ window.SITE = {
       { file: "email", label: "Join the Mailing List",
         sub: "Tour dates and new releases",
         note: "Goes straight to the sign-up on juanitopascual.com.",
-        url: "https://juanitopascual.com/contact" },
+        url: "https://juanitopascual.com/contact#mailing_list_feature_436168" },
       { file: "venmo", label: "Pay by Venmo",
         sub: "@Juanito-Pascual",
         note: "Opens Venmo so someone can pay you directly.",

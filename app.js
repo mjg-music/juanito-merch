@@ -93,6 +93,25 @@
   if (S.note) html += '<p class="sub">' + S.note + '</p>';
   html += '</header><hr class="rule">';
 
+  /* --- Email list --------------------------------------------------------
+     Presales are off, so signing people up IS the job of this page. By
+     default this block sits directly under the header, above the prices,
+     because someone scanning at a loud booth reads about one thing. Set
+     emailFirst:false in config.js to drop it back below the payment rows. */
+  function emailBlock() {
+    if (!live(S.emailUrl)) return '';
+    return '<p class="label">' + (S.emailHeading || 'Stay in touch') + '</p>' +
+      '<div class="stack">' +
+      '<a class="btn primary" href="' + esc(S.emailUrl) + '" target="_blank" rel="noopener">' +
+      '<span class="ico" aria-hidden="true">' + ICONS.mail + '</span>' +
+      '<span class="txt"><b>' + (S.emailLabel || 'Join the mailing list') + '</b>' +
+      (S.emailSub ? '<small>' + S.emailSub + '</small>' : '') + '</span>' +
+      '<span class="arrow" aria-hidden="true">&rsaquo;</span></a></div><hr class="rule">';
+  }
+
+  var emailOnTop = S.emailFirst !== false;
+  if (emailOnTop) html += emailBlock();
+
   /* --- Merch menu -------------------------------------------------------- */
   var merch = S.merch || [];
   if (merch.length) {
@@ -154,15 +173,7 @@
     html += '</div><hr class="rule">';
   }
 
-  /* --- Email list -------------------------------------------------------- */
-  if (live(S.emailUrl)) {
-    html += '<p class="label">Stay in touch</p><div class="stack">' +
-      '<a class="btn primary" href="' + esc(S.emailUrl) + '" target="_blank" rel="noopener">' +
-      '<span class="ico" aria-hidden="true">' + ICONS.mail + '</span>' +
-      '<span class="txt"><b>' + (S.emailLabel || 'Join the mailing list') + '</b>' +
-      (S.emailSub ? '<small>' + S.emailSub + '</small>' : '') + '</span>' +
-      '<span class="arrow" aria-hidden="true">&rsaquo;</span></a></div><hr class="rule">';
-  }
+  if (!emailOnTop) html += emailBlock();
 
   /* --- Secondary links --------------------------------------------------- */
   var links = (S.links || []).filter(function (l) { return live(l.url); });
