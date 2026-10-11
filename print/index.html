@@ -3,344 +3,814 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Juanito Pascual — Print your QR codes</title>
+<title>Juanito Pascual — Print your signs</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#1a0d12">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
-<link rel="preload" href="../assets/fonts/cormorant-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/bebas-neue.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  @font-face{
-    font-family:"Cormorant Garamond";
-    font-style:normal;font-weight:600;font-display:swap;
-    src:url("../assets/fonts/cormorant-600.woff2") format("woff2");
-  }
+  @font-face{font-family:"Bebas Neue";font-weight:400;font-display:swap;
+    src:url("../assets/fonts/bebas-neue.woff2") format("woff2")}
+  @font-face{font-family:"Cormorant Garamond";font-style:normal;font-weight:600;font-display:swap;
+    src:url("../assets/fonts/cormorant-600.woff2") format("woff2")}
+  @font-face{font-family:"Cormorant Garamond";font-style:italic;font-weight:500;font-display:swap;
+    src:url("../assets/fonts/cormorant-italic-500.woff2") format("woff2")}
+
   :root{
-    --ink:#1a0d12;--gold:#dcb468;--gold-bright:#f4d79a;--rose-soft:#eda7b7;
-    --paper:#faf4ee;--muted:#d2bcc4;--line:rgba(220,180,104,.26);
-    --display:"Cormorant Garamond",Georgia,serif;
-    --body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+    /* screen chrome: the booth page's palette */
+    --wine:#1a0d12;--gold:#dcb468;--gold-bright:#f4d79a;--muted:#d2bcc4;
+    --paper:#faf4ee;--line:rgba(220,180,104,.26);
+    /* the signs: Juanito's EPK palette */
+    --ink:#191210;--ink-soft:#3e342f;--ink-muted:#5f5048;
+    --brand-gold:#c8963c;--gold-soft:#e5b450;--gold-deep:#8a5f14;
+    --purple:#5a2d8c;--cream:#f5f0e8;--dark:#0c0a0d;
+    --bebas:"Bebas Neue","Arial Narrow",Impact,sans-serif;
+    --serif:"Cormorant Garamond",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     color-scheme:dark;
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
   body{
-    margin:0;font-family:var(--body);font-size:16px;line-height:1.5;
-    color:var(--paper);background:
-      radial-gradient(120% 70% at 50% -10%,#3a1a26 0%,transparent 60%),
-      var(--ink);
+    margin:0;font-family:var(--sans);font-size:16px;line-height:1.5;color:var(--paper);
+    background:radial-gradient(120% 70% at 50% -10%,#3a1a26 0%,transparent 60%),var(--wine);
     background-attachment:fixed;-webkit-font-smoothing:antialiased;
   }
-  a,button{touch-action:manipulation}
-  .wrap{
-    max-width:620px;margin:0 auto;
-    padding:clamp(26px,6vw,46px) 18px calc(48px + env(safe-area-inset-bottom));
-  }
-  h1.title{
-    font-family:var(--display);font-weight:600;
-    font-size:clamp(32px,8vw,42px);line-height:1.05;margin:0 0 10px;
-    text-wrap:balance;
-  }
-  .lede{font-size:16px;color:var(--muted);margin:0 0 26px;line-height:1.55}
+  button,a{touch-action:manipulation}
 
-  .how{
-    border:1px solid var(--line);border-radius:14px;
-    padding:18px 20px;margin:0 0 26px;background:rgba(250,244,238,.04);
-  }
-  .how h2{
-    font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--muted);margin:0 0 12px;
-  }
+  /* ---------- screen: the list of signs ---------- */
+  .wrap{max-width:980px;margin:0 auto;
+    padding:clamp(26px,6vw,46px) 16px calc(48px + env(safe-area-inset-bottom))}
+  h1.title{font-family:var(--serif);font-weight:600;font-size:clamp(32px,8vw,44px);
+    line-height:1.05;margin:0 0 10px}
+  .lede-s{color:var(--muted);margin:0 0 22px;max-width:620px}
+  .how{border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:0 0 22px;
+    background:rgba(250,244,238,.04);max-width:620px}
+  .how h2{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 10px}
   .how ol{margin:0;padding-left:22px}
-  .how li{margin:0 0 9px;line-height:1.55}
-  .how li:last-child{margin-bottom:0}
+  .how li{margin:0 0 8px}
   .how b{color:var(--gold-bright)}
-
-  .print-all{
-    display:flex;align-items:center;justify-content:center;gap:10px;
-    width:100%;min-height:64px;padding:16px 22px;margin:0 0 34px;
-    font:inherit;font-size:19px;font-weight:600;
-    color:#20101a;cursor:pointer;
+  .print-all{display:block;width:100%;max-width:620px;min-height:62px;margin:0 0 30px;
+    font:inherit;font-size:19px;font-weight:600;color:#20101a;cursor:pointer;
     background:linear-gradient(140deg,var(--gold) 0%,#c99a4c 100%);
-    border:1px solid var(--gold-bright);border-radius:15px;
-    box-shadow:0 10px 28px -14px rgba(220,180,104,.75);
-  }
-  .print-all:active{filter:brightness(1.06)}
-  .print-all svg{width:22px;height:22px}
-
-  .code{
-    display:flex;gap:18px;align-items:center;
-    border:1px solid var(--line);border-radius:15px;
-    padding:18px;margin:0 0 14px;background:rgba(250,244,238,.04);
-  }
-  .qrbox{
-    flex:none;width:122px;height:122px;padding:8px;
-    background:#fff;border-radius:10px;
-  }
-  .qrbox svg{width:100%;height:100%;display:block}
-  .meta{flex:1;min-width:0}
-  .meta h2{font-size:19px;font-weight:600;margin:0 0 2px;line-height:1.25}
-  .subline{font-size:14px;color:var(--gold-bright);margin:0 0 6px;line-height:1.4}
-  .note{font-size:14px;color:var(--muted);margin:0 0 6px;line-height:1.45}
-  .url{
-    font-size:13px;color:var(--rose-soft);margin:0 0 12px;
-    word-break:break-all;line-height:1.4;
-  }
-  .dl{display:flex;flex-wrap:wrap;gap:8px}
-  .btn{
-    display:inline-block;padding:11px 16px;min-height:46px;line-height:24px;
-    font-size:15px;font-weight:600;text-decoration:none;
+    border:1px solid var(--gold-bright);border-radius:15px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+  .item{border:1px solid var(--line);border-radius:15px;padding:14px;
+    background:rgba(250,244,238,.04);display:flex;flex-direction:column;gap:12px}
+  .preview{position:relative;aspect-ratio:7.6/10;overflow:hidden;border-radius:8px;background:#fff}
+  .preview>.sheet{position:absolute;top:0;left:0;transform-origin:0 0}
+  .meta h2{font-family:var(--serif);font-weight:600;font-size:24px;margin:0 0 2px}
+  .meta p{font-size:15px;color:var(--muted);margin:0 0 12px;line-height:1.45}
+  .btn{width:100%;min-height:50px;font:inherit;font-size:16px;font-weight:600;cursor:pointer;
     color:var(--gold-bright);background:rgba(220,180,104,.14);
-    border:1px solid var(--line);border-radius:999px;
-  }
-  .btn.ghost{background:transparent;color:var(--muted)}
-  .btn:active{filter:brightness(1.15)}
+    border:1px solid var(--line);border-radius:999px}
+  .btn:active,.print-all:active{filter:brightness(1.12)}
+  details{margin-top:30px;color:var(--muted);font-size:14px;max-width:620px}
+  details summary{cursor:pointer;min-height:46px;display:flex;align-items:center}
+  details a{color:var(--gold-bright)}
+  footer{margin-top:22px;font-size:14px;color:var(--muted);
+    border-top:1px solid rgba(250,244,238,.1);padding-top:16px;max-width:620px}
 
-  footer{
-    margin-top:30px;font-size:14px;color:var(--muted);line-height:1.6;
-    border-top:1px solid rgba(250,244,238,.1);padding-top:18px;
+  /* ---------- the sheets (screen previews and paper alike) ---------- */
+  .sheet{
+    width:7.6in;height:10in;position:relative;overflow:hidden;
+    display:flex;flex-direction:column;
+    background:#fff;color:var(--ink);font-family:var(--sans);line-height:1.25;
+    border-radius:.14in;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
   }
+  .sheet p{margin:0}
+  .sheet b{font-weight:700}
 
-  @media(max-width:460px){
-    .code{flex-direction:column;align-items:flex-start;gap:14px}
-    .qrbox{width:150px;height:150px;align-self:center}
-    .dl .btn{flex:1;text-align:center}
-  }
+  .band{position:relative;flex:none;height:2.3in;color:var(--cream);background:var(--dark)}
+  .band .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .band .in{position:relative;height:100%;display:flex;align-items:center;gap:.32in;padding:0 .42in}
+  .band .logo{width:1.55in;height:1.55in;flex:none}
+  .band .words{min-width:0}
+  .band .kicker{font:700 10pt var(--sans);letter-spacing:.2em;text-transform:uppercase;
+    color:var(--gold-soft);margin-bottom:.06in}
+  .band h1{font-family:var(--bebas);font-weight:400;font-size:52pt;line-height:.9;
+    margin:0;color:var(--cream);letter-spacing:.01em;text-wrap:balance}
+  .band.short{height:1.05in}
+  .band.short .in{padding:0 .3in;gap:.2in}
+  .band.short .logo{width:.8in;height:.8in}
+  .band.short h1{font-size:30pt}
+
+  .strip{display:block;flex:none;width:100%;height:.3in;object-fit:cover}
+  .body{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;
+    padding:.28in .5in .26in}
+
+  .qr{background:#fff;flex:none}
+  .qr svg{display:block;width:100%;height:100%}
+  .qr.big{width:4.4in;height:4.4in}
+  .qr.mid{width:2.5in;height:2.5in}
+  .qr.small{width:1.45in;height:1.45in}
+
+  .kick{font:700 9.5pt var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--purple)}
+  .aim{font:700 14pt var(--sans);margin-top:.06in!important}
+  .payline{font-size:12.5pt;color:var(--ink-soft);display:flex;flex-wrap:wrap;
+    justify-content:center;gap:.04in .26in;margin-top:.05in!important}
+  .payline b{color:var(--ink);font-weight:800}
+
+  /* 1 main */
+  .s-main .lede{font-size:16pt;color:var(--ink-soft);margin-bottom:.18in!important;text-align:center}
+  .s-main .fallback{margin-top:auto;width:100%;text-align:center;
+    border-top:2px solid var(--brand-gold);padding-top:.16in}
+  .s-main .url{font-size:10pt;color:var(--ink-muted);margin-top:.06in!important}
+
+  /* 2 menu */
+  .s-menu .body{align-items:stretch;padding-top:.22in}
+  .s-menu .cols{display:flex;gap:.25in;align-items:flex-start}
+  .s-menu .list{flex:1;min-width:0}
+  .s-menu .trio{width:2.55in;flex:none;margin-top:.1in}
+  .s-menu .grp{margin-bottom:.18in}
+  .s-menu h2{font-family:var(--bebas);font-weight:400;font-size:28pt;line-height:1;
+    color:var(--purple);margin:0 0 .02in;letter-spacing:.02em}
+  .s-menu .row{display:flex;align-items:baseline;gap:.08in;font-size:15.5pt;line-height:1.38}
+  .s-menu .lab{white-space:nowrap}
+  .s-menu .dots{flex:1;border-bottom:1.5px dotted #b8a99e;transform:translateY(-.06in)}
+  .s-menu .price{font-family:var(--bebas);font-size:28pt;line-height:1;color:var(--gold-deep)}
+  .s-menu .titles{font:italic 500 14pt var(--serif);color:var(--ink-soft);margin-top:.03in!important;line-height:1.3}
+  .s-menu .titles span{white-space:nowrap}
+  .s-menu .soon{font:italic 500 14pt var(--serif);color:var(--ink-soft)}
+  .s-menu .deal{background:var(--purple);color:var(--cream);text-align:center;
+    font-family:var(--bebas);font-size:23pt;letter-spacing:.03em;line-height:1;
+    padding:.12in .2in .1in;border-radius:.08in;margin:.04in 0 0!important}
+  .s-menu .perk{text-align:center;font-weight:700;font-size:13pt;margin-top:.1in!important}
+  .s-menu blockquote{margin:.16in 0 0;text-align:center}
+  .s-menu blockquote p{font:italic 500 21pt var(--serif);line-height:1.1}
+  .s-menu cite{display:block;font:700 9pt var(--sans);letter-spacing:.2em;
+    text-transform:uppercase;color:var(--gold-deep);font-style:normal;margin-top:.04in}
+  .s-menu .foot{margin-top:auto;display:flex;align-items:center;gap:.26in;
+    border-top:2px solid var(--brand-gold);padding-top:.16in}
+  .s-menu .foot .payline{justify-content:flex-start;gap:.02in .2in}
+
+  /* 3 pay */
+  .s-pay .body{align-items:stretch;padding-top:.14in}
+  .s-pay .method{display:flex;align-items:center;gap:.3in;padding:.27in 0;
+    border-bottom:1.5px solid #e7ddd2}
+  .s-pay .method h2{font-family:var(--bebas);font-weight:400;font-size:40pt;line-height:.95;
+    color:var(--purple);width:1.75in;flex:none;margin:0;letter-spacing:.02em}
+  .s-pay .big{font-size:25pt;font-weight:800;line-height:1.12;word-break:break-word}
+  .s-pay .small{font-size:14pt;color:var(--ink-muted);margin-top:.05in!important}
+  .s-pay .foot{margin-top:auto;display:flex;align-items:center;gap:.3in;padding-top:.12in}
+  .s-pay .say{font-size:15pt;color:var(--ink-soft);margin-top:.06in!important}
+
+  /* 4 email */
+  .s-email .pitch{font-family:var(--bebas);font-size:33pt;line-height:1;color:var(--purple);
+    text-align:center;letter-spacing:.02em}
+  .s-email .pitchsub{font-size:13.5pt;color:var(--ink-muted);margin:.06in 0 .2in!important;text-align:center}
+  .s-email .or{font-size:12.5pt;color:var(--ink-soft);margin-top:auto!important}
+
+  /* 5 tent: two landscape faces, the top one upside down */
+  .s-tent{border-radius:0}
+  .s-tent .face{height:4.9in;display:flex;flex-direction:column;border-radius:.12in;overflow:hidden;
+    border:1px solid #e7ddd2}
+  .s-tent .flip{transform:rotate(180deg)}
+  .s-tent .fold{flex:1;display:flex;align-items:center;position:relative}
+  .s-tent .fold::before{content:"";flex:1;border-top:1.5px dashed #9d8f86}
+  .s-tent .fold span{position:absolute;left:50%;transform:translateX(-50%);background:#fff;
+    padding:0 .1in;font:600 8pt var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#9d8f86}
+  .s-tent .fbody{flex:1;display:flex;align-items:center;gap:.32in;padding:.2in .4in}
+  .s-tent .qr.tent{width:3.25in;height:3.25in}
+  .s-tent .fline{font-size:14pt;line-height:1.2;margin-top:.13in!important;color:var(--ink-soft)}
+  .s-tent .fline b{font-family:var(--bebas);font-weight:400;font-size:19pt;letter-spacing:.03em;color:var(--purple)}
+
+  /* 6 cards */
+  .s-cards{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);border-radius:0}
+  .s-cards .card{border:1px dashed #b8aca3;display:flex;flex-direction:column;overflow:hidden}
+  .s-cards .cband{position:relative;height:.62in;flex:none;display:flex;align-items:center;
+    justify-content:center;background:var(--dark)}
+  .s-cards .cband img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .s-cards .cband span{position:relative;font-family:var(--bebas);font-size:17pt;color:var(--cream);letter-spacing:.03em}
+  .s-cards .cbody{flex:1;display:flex;align-items:center;gap:.16in;padding:.14in .2in}
+  .s-cards .qr.cqr{width:1.62in;height:1.62in}
+  .s-cards .cname{font:600 15pt var(--serif);line-height:1.05}
+  .s-cards .cpay{font-size:9.5pt;margin-top:.08in!important;color:var(--ink-soft);white-space:nowrap}
+  .s-cards .curl{font-size:6.3pt;color:var(--ink-muted);margin-top:.06in!important;white-space:nowrap}
 
   /* ---------- paper ---------- */
   .paper{display:none}
   @media print{
-    @page{size:letter;margin:0.4in}
-    html,body{background:#fff!important;color:#111!important}
+    @page{size:letter;margin:.4in .45in}
+    html,body{background:#fff!important}
     .screen{display:none!important}
     .paper{display:block}
-
-    .sheet{page-break-after:always;break-after:page}
-    .sheet:last-child{page-break-after:auto;break-after:auto}
-    /* "Print this sign" hides every other sheet for the one print job. */
-    .sheet.skip{display:none!important}
-    .sheet.skip + .sheet{page-break-before:avoid;break-before:avoid}
-
-    .tent{
-      height:9.9in;border:2px solid #111;border-radius:18px;
-      padding:0.42in 0.34in;text-align:center;
-      display:flex;flex-direction:column;align-items:center;
-      justify-content:space-between;
-    }
-    .tent .head,.tent .foot{width:100%;flex:none}
-    .tent h1{
-      font-family:var(--display);font-size:48pt;font-weight:600;
-      line-height:1.02;margin:0;color:#111;text-wrap:balance;
-    }
-    .tent .sub{font-size:17pt;line-height:1.25;margin:0.1in 0 0;color:#333}
-    .tent .qr{width:4.5in;height:4.5in;flex:none}
-    .tent .qr svg{width:100%;height:100%;display:block}
-    .tent .scan{font-size:16pt;font-weight:600;margin:0 0 0.14in;color:#111}
-    .tent .who{
-      font-family:var(--display);font-size:20pt;font-weight:600;
-      margin:0;color:#111;
-    }
-    .tent .where{font-size:11pt;margin:0.03in 0 0;color:#5a3a44;letter-spacing:.02em}
-    .tent .link{font-size:9pt;color:#777;margin:0.07in 0 0}
-
-    .cards{
-      height:9.9in;display:grid;
-      grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);
-    }
-    .handcard{
-      border:1px dashed #bbb;padding:0.16in;text-align:center;
-      display:flex;flex-direction:column;align-items:center;
-      justify-content:center;gap:6px;
-    }
-    .handcard .cap{
-      font-family:var(--display);font-size:15pt;font-weight:600;
-      line-height:1.05;color:#111;text-wrap:balance;
-    }
-    .handcard .qr{width:1.6in;height:1.6in}
-    .handcard .qr svg{width:100%;height:100%;display:block}
-    .handcard .name{font-size:9pt;color:#333;line-height:1.2}
-    .handcard .link{font-size:6.5pt;color:#888;word-break:break-all}
+    .paper .sheet{break-after:page;page-break-after:always;break-inside:avoid}
+    .paper .sheet:last-child{break-after:auto;page-break-after:auto}
+    .paper .sheet.skip{display:none!important}
   }
 </style>
 </head>
 <body>
 
 <div class="wrap screen">
-  <h1 class="title">Print your QR codes</h1>
-  <p class="lede">These are the signs for the merch table. You can print them
-    yourself on any printer — nothing needs to be ordered.</p>
+  <h1 class="title">Print your signs</h1>
+  <p class="lede-s">Everything for the merch table. Print them on the venue printer &mdash;
+    in color if it can, but black and white works too.</p>
 
   <div class="how">
     <h2>How to print</h2>
     <ol>
-      <li>Tap <b>Print all signs</b> below, or use <b>Print this sign</b>
-        next to any one code to print just that page.</li>
-      <li>Every sign comes out with its heading already on it &mdash; the big
-        words at the top say what the code is for.</li>
-      <li>Card stock looks best, but regular paper works fine.</li>
-      <li>To send it to a print shop instead, choose <b>Save as PDF</b> in the
-        print window and email them the file.</li>
+      <li>Tap <b>Print this sign</b> under any sign to print just that one, or
+        <b>Print every sign</b> for the whole set.</li>
+      <li>For the table, the best three are the <b>Table tent</b>, the
+        <b>Merch menu</b> and the <b>Email list</b> sign.</li>
+      <li>The table tent folds in half along the dotted line and stands up on its own.</li>
+      <li>To send one to a print shop, pick <b>Save as PDF</b> in the print window.</li>
     </ol>
   </div>
 
-  <button class="print-all" type="button" onclick="printAll()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
-         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M6 9V3h12v6"/><rect x="3.5" y="9" width="17" height="7.5" rx="2"/>
-      <path d="M6 14h12v7H6z"/>
-    </svg>
-    Print all signs
-  </button>
+  <button class="print-all" type="button" onclick="printAll()">Print every sign</button>
 
-  
-    <section class="code">
-      <div class="qrbox"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
-</div>
-      <div class="meta">
-        <h2>Merch & Mailing List</h2>
-        <p class="subline">Prices, how to pay, and the mailing list</p>
-        <p class="note">The main one. Put this on the table — it opens the page with prices, payment and the mailing list.</p>
-        <p class="url">mjg-music.github.io/juanito-merch</p>
-        <div class="dl">
-          <button class="btn" type="button" onclick="printOne('booth')">Print this sign</button>
-          <a class="btn ghost" href="booth-sign.svg" download>Save as a file</a>
+  <div class="grid">
+    <article class="item">
+      <div class="preview">
+    <div class="sheet s-main" data-file="main">
+      
+    <header class="band">
+      <img class="bg" src="../assets/print/band.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          <p class="kicker">Scan with your phone camera</p>
+          <h1>Merch · Pay · Email List</h1>
         </div>
       </div>
-    </section>
-    <section class="code">
-      <div class="qrbox"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 51 51" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h51v51H0z"/><path stroke="#000000" d="M3 3.5h7m3 0h2m4 0h1m5 0h1m3 0h6m1 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m3 0h2m2 0h1m1 0h1m1 0h3m2 0h1m1 0h2m1 0h3m1 0h2m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m2 0h1m3 0h1m2 0h2m5 0h1m1 0h2m4 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m4 0h1m1 0h1m1 0h5m2 0h3m1 0h4m1 0h3m1 0h2m1 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m1 0h1m2 0h5m2 0h1m1 0h5m2 0h1m5 0h4m1 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m3 0h2m2 0h1m1 0h3m1 0h1m3 0h3m3 0h1m1 0h2m4 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h1m4 0h2m3 0h1m3 0h3m1 0h2m3 0h4M5 11.5h2m2 0h7m2 0h1m1 0h1m1 0h8m1 0h2m3 0h1m1 0h4m1 0h1M4 12.5h2m1 0h2m4 0h1m2 0h1m5 0h5m2 0h2m1 0h2m1 0h2m1 0h3m3 0h2m1 0h1M4 13.5h1m1 0h1m1 0h3m1 0h1m3 0h2m2 0h2m7 0h2m1 0h4m1 0h1m2 0h3m1 0h1m1 0h2M4 14.5h3m1 0h1m2 0h2m1 0h1m4 0h1m1 0h3m3 0h2m2 0h2m1 0h4m1 0h2m1 0h3m1 0h1M3 15.5h1m3 0h4m3 0h1m2 0h2m1 0h2m1 0h1m3 0h8m9 0h1m1 0h2M5 16.5h2m1 0h1m2 0h2m1 0h4m3 0h2m1 0h1m5 0h1m3 0h3m3 0h6M5 17.5h1m2 0h8m2 0h1m1 0h1m1 0h1m3 0h3m1 0h2m1 0h1m1 0h1m2 0h1m2 0h3m2 0h1M10 18.5h1m1 0h3m1 0h1m2 0h5m1 0h2m2 0h3m1 0h1m1 0h2m2 0h1m2 0h5M3 19.5h1m1 0h5m2 0h3m3 0h1m3 0h1m1 0h1m1 0h6m2 0h4m1 0h4m2 0h2M3 20.5h1m2 0h1m4 0h2m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m4 0h5m3 0h1m1 0h1m2 0h1M4 21.5h2m2 0h3m4 0h1m2 0h1m3 0h2m1 0h4m2 0h5m1 0h2m1 0h2m1 0h1m1 0h2M3 22.5h1m2 0h2m6 0h1m3 0h1m1 0h4m1 0h2m2 0h1m1 0h1m1 0h1m4 0h1m1 0h1m2 0h1m2 0h2M3 23.5h1m1 0h1m1 0h5m1 0h1m1 0h1m3 0h1m3 0h9m1 0h1m2 0h1m2 0h5m1 0h3M3 24.5h2m2 0h1m3 0h1m1 0h1m1 0h2m1 0h3m2 0h1m3 0h2m2 0h2m1 0h1m3 0h2m3 0h2m2 0h1M3 25.5h3m1 0h1m1 0h1m1 0h3m2 0h6m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h6m1 0h1m1 0h1m1 0h3M5 26.5h1m1 0h1m3 0h1m1 0h1m1 0h2m1 0h1m1 0h1m2 0h1m3 0h1m1 0h3m2 0h1m1 0h2m1 0h1m3 0h2m1 0h1M3 27.5h2m2 0h5m2 0h1m2 0h2m4 0h5m1 0h1m3 0h1m2 0h1m2 0h5m3 0h1M3 28.5h3m1 0h2m2 0h1m1 0h5m2 0h1m1 0h1m3 0h1m1 0h1m2 0h2m2 0h1m6 0h1m1 0h3M5 29.5h1m1 0h1m1 0h1m2 0h2m1 0h1m4 0h5m2 0h1m6 0h1m3 0h2m3 0h2M3 30.5h1m1 0h2m1 0h1m1 0h2m1 0h1m8 0h1m1 0h6m2 0h1m2 0h1m1 0h1m1 0h4m1 0h3M5 31.5h3m1 0h2m3 0h1m4 0h3m1 0h1m3 0h4m3 0h5m1 0h1m1 0h4m1 0h1M3 32.5h3m1 0h2m2 0h1m1 0h2m1 0h2m3 0h1m4 0h1m1 0h1m1 0h1m4 0h3m3 0h4m1 0h2M4 33.5h2m2 0h4m2 0h2m5 0h2m1 0h1m1 0h3m4 0h5m1 0h2m1 0h1m1 0h3M5 34.5h3m2 0h1m1 0h1m2 0h3m1 0h4m1 0h5m2 0h2m6 0h1m2 0h1m3 0h2M5 35.5h1m3 0h1m2 0h5m3 0h3m4 0h3m1 0h1m1 0h1m2 0h2m3 0h1m2 0h4M4 36.5h3m3 0h1m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m3 0h1m4 0h1m1 0h2m4 0h2m2 0h2m1 0h1M7 37.5h1m1 0h2m1 0h2m4 0h1m1 0h1m1 0h1m4 0h3m3 0h1m1 0h1m1 0h1m3 0h1m1 0h2m1 0h2M4 38.5h4m3 0h1m1 0h1m1 0h1m1 0h2m2 0h1m3 0h1m1 0h1m1 0h3m1 0h7m3 0h2m2 0h1M3 39.5h1m2 0h2m1 0h1m1 0h1m3 0h1m4 0h1m2 0h6m7 0h1m2 0h6m1 0h2M11 40.5h1m1 0h1m4 0h4m1 0h1m3 0h1m1 0h1m5 0h1m2 0h2m3 0h1m1 0h1M3 41.5h7m1 0h1m3 0h3m3 0h3m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m3 0h1m1 0h1m1 0h3M3 42.5h1m5 0h1m3 0h5m1 0h1m1 0h3m3 0h1m1 0h3m1 0h3m2 0h2m3 0h3m1 0h1M3 43.5h1m1 0h3m1 0h1m3 0h3m1 0h1m5 0h6m1 0h3m1 0h2m2 0h6m1 0h2M3 44.5h1m1 0h3m1 0h1m1 0h2m1 0h3m3 0h1m1 0h3m3 0h1m2 0h2m1 0h4m1 0h2m6 0h1M3 45.5h1m1 0h3m1 0h1m1 0h1m1 0h1m3 0h2m6 0h2m1 0h2m1 0h1m3 0h1m2 0h4m2 0h1M3 46.5h1m5 0h1m2 0h1m1 0h2m2 0h4m4 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h1M3 47.5h7m3 0h1m2 0h4m2 0h1m1 0h7m2 0h2m6 0h2m2 0h1"/></svg>
+    </header>
+      <div class="body">
+        <p class="lede">Prices, every way to pay, and the email list</p>
+        <div class="qr big"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
 </div>
-      <div class="meta">
-        <h2>Join Juanito’s Email List</h2>
-        <p class="subline">Tour dates and new releases</p>
-        <p class="note">Goes straight to the sign-up on juanitopascual.com.</p>
-        <p class="url">juanitopascual.com/contact</p>
-        <div class="dl">
-          <button class="btn" type="button" onclick="printOne('email')">Print this sign</button>
-          <a class="btn ghost" href="email-sign.svg" download>Save as a file</a>
+        <p class="aim">Open your camera and point it here</p>
+        <div class="fallback">
+          <p class="kick">Camera won’t scan? Pay by name:</p>
+          
+    <p class="payline">
+      <span><b>Venmo</b> @Juanito-Pascual</span>
+      <span><b>PayPal</b> jp@jpascual.com</span>
+      <span><b>Cash</b> or <b>check</b></span>
+    </p>
+          <p class="url">mjg-music.github.io/juanito-merch</p>
         </div>
       </div>
-    </section>
-    <section class="code">
-      <div class="qrbox"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 47 47" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h47v47H0z"/><path stroke="#000000" d="M3 3.5h7m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m3 0h1m1 0h1m8 0h7M3 4.5h1m5 0h1m6 0h1m1 0h1m2 0h2m1 0h3m1 0h2m1 0h2m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h5m1 0h5m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m1 0h2m2 0h4m2 0h1m2 0h1m1 0h2m1 0h1m1 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m4 0h1m1 0h3m4 0h1m1 0h1m2 0h1m2 0h1m1 0h2m2 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m4 0h4m2 0h4m1 0h1m1 0h1m4 0h1m2 0h1m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M14 10.5h3m1 0h4m1 0h2m4 0h3m2 0h1M6 11.5h2m1 0h2m1 0h2m2 0h1m1 0h2m1 0h1m1 0h5m4 0h1m1 0h1m5 0h2M3 12.5h1m2 0h2m2 0h2m1 0h1m3 0h1m1 0h1m5 0h3m2 0h1m2 0h2m3 0h2m2 0h1M3 13.5h1m1 0h5m4 0h1m1 0h2m2 0h1m1 0h1m1 0h3m2 0h3m1 0h1m3 0h3m1 0h1M4 14.5h1m7 0h2m3 0h5m3 0h2m1 0h2m2 0h4m3 0h2m1 0h2M3 15.5h2m1 0h2m1 0h1m1 0h2m2 0h1m1 0h3m1 0h2m1 0h6m1 0h1m1 0h1m4 0h1m3 0h2M3 16.5h3m4 0h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h2m2 0h3m2 0h1m1 0h3m2 0h3m2 0h1M4 17.5h1m2 0h3m1 0h1m1 0h2m1 0h2m1 0h2m6 0h3m1 0h8m4 0h1M4 18.5h5m1 0h1m1 0h3m5 0h1m1 0h2m1 0h2m3 0h1m2 0h1m1 0h2m1 0h6M3 19.5h2m3 0h2m1 0h1m2 0h1m1 0h1m1 0h1m2 0h3m3 0h3m5 0h2M6 20.5h1m1 0h1m3 0h1m1 0h1m2 0h1m1 0h1m4 0h4m1 0h8m2 0h1M3 21.5h3m1 0h5m2 0h1m3 0h1m1 0h5m2 0h1m2 0h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1M3 22.5h2m1 0h1m4 0h1m1 0h3m3 0h2m3 0h1m1 0h1m3 0h2m2 0h1m1 0h1m2 0h1m1 0h3M3 23.5h3m1 0h1m1 0h1m3 0h1m3 0h1m1 0h1m1 0h3m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h7M4 24.5h1m2 0h2m1 0h1m1 0h1m2 0h3m2 0h1m1 0h3m2 0h1m2 0h3m1 0h1m1 0h1m2 0h1M3 25.5h1m2 0h1m1 0h2m1 0h7m4 0h1m1 0h2m1 0h5m1 0h1m1 0h1m1 0h1m1 0h3M4 26.5h1m1 0h1m10 0h3m1 0h6m1 0h1m1 0h1m1 0h2m2 0h1m1 0h2M4 27.5h1m2 0h3m3 0h1m10 0h3m1 0h1m2 0h1m3 0h3m2 0h2M5 28.5h4m2 0h2m2 0h3m1 0h1m1 0h1m3 0h2m3 0h4m1 0h1m1 0h3m1 0h1m1 0h1M3 29.5h2m2 0h1m1 0h1m3 0h2m1 0h3m1 0h2m1 0h1m5 0h2m1 0h1m1 0h7m2 0h1M3 30.5h1m3 0h1m3 0h5m1 0h1m2 0h2m4 0h1m2 0h1m3 0h2m1 0h2m2 0h2m1 0h1M4 31.5h1m2 0h4m2 0h2m2 0h1m2 0h2m9 0h1m2 0h3m1 0h1m1 0h1m1 0h1M3 32.5h1m1 0h2m1 0h1m3 0h3m1 0h1m1 0h1m3 0h2m1 0h1m2 0h2m1 0h3m1 0h3m1 0h1m2 0h1M3 33.5h2m1 0h1m2 0h1m3 0h1m6 0h1m2 0h2m1 0h3m1 0h1m2 0h1m1 0h2m1 0h1m4 0h1M3 34.5h2m5 0h3m3 0h1m2 0h1m1 0h1m1 0h3m1 0h3m7 0h2m1 0h2m1 0h1M3 35.5h2m1 0h4m2 0h3m2 0h2m2 0h2m1 0h2m1 0h1m1 0h4m2 0h8M11 36.5h3m1 0h6m1 0h1m2 0h1m3 0h5m1 0h1m3 0h2m1 0h1M3 37.5h7m1 0h1m4 0h1m2 0h1m2 0h1m5 0h3m3 0h2m1 0h1m1 0h1M3 38.5h1m5 0h1m2 0h4m3 0h3m2 0h1m4 0h1m1 0h1m1 0h3m3 0h2m1 0h2M3 39.5h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h6m1 0h1m1 0h5m1 0h2m1 0h7m2 0h1M3 40.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h2m2 0h1m4 0h3m1 0h1m1 0h1m2 0h1m4 0h1M3 41.5h1m1 0h3m1 0h1m2 0h1m1 0h4m3 0h3m4 0h1m1 0h1m1 0h1m2 0h2m1 0h6M3 42.5h1m5 0h1m2 0h3m1 0h5m1 0h2m1 0h2m4 0h1m4 0h2m1 0h2m2 0h1M3 43.5h7m2 0h5m1 0h1m4 0h1m4 0h2m3 0h4m2 0h1m1 0h1"/></svg>
-</div>
+      <img class="strip" src="../assets/print/strip.jpg" alt="">
+    </div></div>
       <div class="meta">
-        <h2>Pay Here</h2>
-        <p class="subline">Venmo, PayPal, cash or check</p>
-        <p class="note">Opens the page scrolled to the payment options, so the buyer picks — nobody is forced into Venmo.</p>
-        <p class="url">mjg-music.github.io/juanito-merch</p>
-        <div class="dl">
-          <button class="btn" type="button" onclick="printOne('pay')">Print this sign</button>
-          <a class="btn ghost" href="pay-sign.svg" download>Save as a file</a>
+        <h2>Main sign</h2>
+        <p>The big code for the front of the table. Everything is behind it: prices, paying, and the email list.</p>
+        <button class="btn" type="button" onclick="printOne('main')">Print this sign</button>
+      </div>
+    </article>
+    <article class="item">
+      <div class="preview">
+    <div class="sheet s-menu" data-file="menu">
+      
+    <header class="band">
+      <img class="bg" src="../assets/print/band.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          <p class="kicker">Fire. Elegance. Soul.</p>
+          <h1>Take the Music Home</h1>
         </div>
       </div>
-    </section>
-
-  <div class="code extra">
-    <div class="meta">
-      <h2>A page of small cards</h2>
-      <p class="note">Six little ones of the main code, to hand out or leave
-        on the table.</p>
-      <div class="dl">
-        <button class="btn" type="button" onclick="printOne('cards')">Print the cards</button>
+    </header>
+      <div class="body">
+        <div class="cols">
+          <div class="list"><section class="grp"><h2>CDs</h2>
+        <div class="row"><span class="lab">1 CD</span><span class="dots"></span><span class="price">$20</span></div>
+        <div class="row"><span class="lab">2 CDs</span><span class="dots"></span><span class="price">$30</span></div>
+        <div class="row"><span class="lab">3 CDs</span><span class="dots"></span><span class="price">$40</span></div><p class="titles"><span>New Flamenco Trio</span> · <span>Language of the Heart</span> · <span>Cosas en Com&uacute;n</span></p></section><section class="grp"><h2>Method Book</h2>
+        <div class="row"><span class="lab">The Total Flamenco Guitarist</span><span class="dots"></span><span class="price">$25</span></div></section><section class="grp"><h2>New Album</h2><p class="soon">Gold &amp; Rose &mdash; out February 2027 on Mot&eacute;ma Music</p></section></div>
+          <img class="trio" src="../assets/print/trio.webp" alt="">
+        </div>
+        <p class="deal">All three CDs for $40 · Save $20</p>
+        
+        <blockquote><p>“A flamenco phenom.”</p><cite>The Boston Globe</cite></blockquote>
+        <div class="foot">
+          <div class="qr small"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="kick">Scan to pay — or pay by name</p>
+            
+    <p class="payline">
+      <span><b>Venmo</b> @Juanito-Pascual</span>
+      <span><b>PayPal</b> jp@jpascual.com</span>
+      <span><b>Cash</b> or <b>check</b></span>
+    </p>
+          </div>
+        </div>
       </div>
-    </div>
+      <img class="strip" src="../assets/print/strip.jpg" alt="">
+    </div></div>
+      <div class="meta">
+        <h2>Merch menu</h2>
+        <p>Prices big enough to read from across the room, with the best deal called out.</p>
+        <button class="btn" type="button" onclick="printOne('menu')">Print this sign</button>
+      </div>
+    </article>
+    <article class="item">
+      <div class="preview">
+    <div class="sheet s-pay" data-file="pay">
+      
+    <header class="band">
+      <img class="bg" src="../assets/print/band.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          <p class="kicker">Venmo · PayPal · Cash or check</p>
+          <h1>Pay Any Way You Like</h1>
+        </div>
+      </div>
+    </header>
+      <div class="body">
+        
+        <div class="method">
+          <h2>Venmo</h2>
+          <div><p class="big">@Juanito-Pascual</p><p class="small">Search Juanito-Pascual in the Venmo app</p></div>
+        </div>
+        <div class="method">
+          <h2>PayPal</h2>
+          <div><p class="big">jp@jpascual.com</p><p class="small">Shows up as <b>Three Columns Music</b></p></div>
+        </div>
+        <div class="method">
+          <h2>Cash or check</h2>
+          <div><p class="big">Checks payable to <b>Three Columns Music</b></p><p class="small">Cash is great too — right here at the table</p></div>
+        </div>
+        <div class="foot">
+          <div class="qr mid"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="kick">Or scan it</p>
+            <p class="say">See the prices and pay from your phone.</p>
+          </div>
+        </div>
+      </div>
+      <img class="strip" src="../assets/print/strip.jpg" alt="">
+    </div></div>
+      <div class="meta">
+        <h2>How to pay</h2>
+        <p>Every way to pay, written out. For anyone whose camera won’t scan.</p>
+        <button class="btn" type="button" onclick="printOne('pay')">Print this sign</button>
+      </div>
+    </article>
+    <article class="item">
+      <div class="preview">
+    <div class="sheet s-email" data-file="email">
+      
+    <header class="band">
+      <img class="bg" src="../assets/print/band.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          <p class="kicker">Tour dates and new releases</p>
+          <h1>Join Juanito’s Email List</h1>
+        </div>
+      </div>
+    </header>
+      <div class="body">
+        <p class="pitch">Be the first to hear Gold &amp; Rose</p>
+        <p class="pitchsub">The new album · February 2027 · Motéma Music</p>
+        <div class="qr big"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 51 51" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h51v51H0z"/><path stroke="#000000" d="M3 3.5h7m3 0h2m4 0h1m5 0h1m3 0h6m1 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m3 0h2m2 0h1m1 0h1m1 0h3m2 0h1m1 0h2m1 0h3m1 0h2m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m2 0h1m3 0h1m2 0h2m5 0h1m1 0h2m4 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m4 0h1m1 0h1m1 0h5m2 0h3m1 0h4m1 0h3m1 0h2m1 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m1 0h1m2 0h5m2 0h1m1 0h5m2 0h1m5 0h4m1 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m3 0h2m2 0h1m1 0h3m1 0h1m3 0h3m3 0h1m1 0h2m4 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h1m4 0h2m3 0h1m3 0h3m1 0h2m3 0h4M5 11.5h2m2 0h7m2 0h1m1 0h1m1 0h8m1 0h2m3 0h1m1 0h4m1 0h1M4 12.5h2m1 0h2m4 0h1m2 0h1m5 0h5m2 0h2m1 0h2m1 0h2m1 0h3m3 0h2m1 0h1M4 13.5h1m1 0h1m1 0h3m1 0h1m3 0h2m2 0h2m7 0h2m1 0h4m1 0h1m2 0h3m1 0h1m1 0h2M4 14.5h3m1 0h1m2 0h2m1 0h1m4 0h1m1 0h3m3 0h2m2 0h2m1 0h4m1 0h2m1 0h3m1 0h1M3 15.5h1m3 0h4m3 0h1m2 0h2m1 0h2m1 0h1m3 0h8m9 0h1m1 0h2M5 16.5h2m1 0h1m2 0h2m1 0h4m3 0h2m1 0h1m5 0h1m3 0h3m3 0h6M5 17.5h1m2 0h8m2 0h1m1 0h1m1 0h1m3 0h3m1 0h2m1 0h1m1 0h1m2 0h1m2 0h3m2 0h1M10 18.5h1m1 0h3m1 0h1m2 0h5m1 0h2m2 0h3m1 0h1m1 0h2m2 0h1m2 0h5M3 19.5h1m1 0h5m2 0h3m3 0h1m3 0h1m1 0h1m1 0h6m2 0h4m1 0h4m2 0h2M3 20.5h1m2 0h1m4 0h2m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m4 0h5m3 0h1m1 0h1m2 0h1M4 21.5h2m2 0h3m4 0h1m2 0h1m3 0h2m1 0h4m2 0h5m1 0h2m1 0h2m1 0h1m1 0h2M3 22.5h1m2 0h2m6 0h1m3 0h1m1 0h4m1 0h2m2 0h1m1 0h1m1 0h1m4 0h1m1 0h1m2 0h1m2 0h2M3 23.5h1m1 0h1m1 0h5m1 0h1m1 0h1m3 0h1m3 0h9m1 0h1m2 0h1m2 0h5m1 0h3M3 24.5h2m2 0h1m3 0h1m1 0h1m1 0h2m1 0h3m2 0h1m3 0h2m2 0h2m1 0h1m3 0h2m3 0h2m2 0h1M3 25.5h3m1 0h1m1 0h1m1 0h3m2 0h6m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h6m1 0h1m1 0h1m1 0h3M5 26.5h1m1 0h1m3 0h1m1 0h1m1 0h2m1 0h1m1 0h1m2 0h1m3 0h1m1 0h3m2 0h1m1 0h2m1 0h1m3 0h2m1 0h1M3 27.5h2m2 0h5m2 0h1m2 0h2m4 0h5m1 0h1m3 0h1m2 0h1m2 0h5m3 0h1M3 28.5h3m1 0h2m2 0h1m1 0h5m2 0h1m1 0h1m3 0h1m1 0h1m2 0h2m2 0h1m6 0h1m1 0h3M5 29.5h1m1 0h1m1 0h1m2 0h2m1 0h1m4 0h5m2 0h1m6 0h1m3 0h2m3 0h2M3 30.5h1m1 0h2m1 0h1m1 0h2m1 0h1m8 0h1m1 0h6m2 0h1m2 0h1m1 0h1m1 0h4m1 0h3M5 31.5h3m1 0h2m3 0h1m4 0h3m1 0h1m3 0h4m3 0h5m1 0h1m1 0h4m1 0h1M3 32.5h3m1 0h2m2 0h1m1 0h2m1 0h2m3 0h1m4 0h1m1 0h1m1 0h1m4 0h3m3 0h4m1 0h2M4 33.5h2m2 0h4m2 0h2m5 0h2m1 0h1m1 0h3m4 0h5m1 0h2m1 0h1m1 0h3M5 34.5h3m2 0h1m1 0h1m2 0h3m1 0h4m1 0h5m2 0h2m6 0h1m2 0h1m3 0h2M5 35.5h1m3 0h1m2 0h5m3 0h3m4 0h3m1 0h1m1 0h1m2 0h2m3 0h1m2 0h4M4 36.5h3m3 0h1m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m3 0h1m4 0h1m1 0h2m4 0h2m2 0h2m1 0h1M7 37.5h1m1 0h2m1 0h2m4 0h1m1 0h1m1 0h1m4 0h3m3 0h1m1 0h1m1 0h1m3 0h1m1 0h2m1 0h2M4 38.5h4m3 0h1m1 0h1m1 0h1m1 0h2m2 0h1m3 0h1m1 0h1m1 0h3m1 0h7m3 0h2m2 0h1M3 39.5h1m2 0h2m1 0h1m1 0h1m3 0h1m4 0h1m2 0h6m7 0h1m2 0h6m1 0h2M11 40.5h1m1 0h1m4 0h4m1 0h1m3 0h1m1 0h1m5 0h1m2 0h2m3 0h1m1 0h1M3 41.5h7m1 0h1m3 0h3m3 0h3m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m3 0h1m1 0h1m1 0h3M3 42.5h1m5 0h1m3 0h5m1 0h1m1 0h3m3 0h1m1 0h3m1 0h3m2 0h2m3 0h3m1 0h1M3 43.5h1m1 0h3m1 0h1m3 0h3m1 0h1m5 0h6m1 0h3m1 0h2m2 0h6m1 0h2M3 44.5h1m1 0h3m1 0h1m1 0h2m1 0h3m3 0h1m1 0h3m3 0h1m2 0h2m1 0h4m1 0h2m6 0h1M3 45.5h1m1 0h3m1 0h1m1 0h1m1 0h1m3 0h2m6 0h2m1 0h2m1 0h1m3 0h1m2 0h4m2 0h1M3 46.5h1m5 0h1m2 0h1m1 0h2m2 0h4m4 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h1M3 47.5h7m3 0h1m2 0h4m2 0h1m1 0h7m2 0h2m6 0h2m2 0h1"/></svg>
+</div>
+        <p class="aim">Open your camera and point it here</p>
+        <p class="or">or go to <b>juanitopascual.com/contact</b></p>
+      </div>
+      <img class="strip" src="../assets/print/strip.jpg" alt="">
+    </div></div>
+      <div class="meta">
+        <h2>Email list</h2>
+        <p>Goes straight to the sign-up, with a reason to join: hearing the new album first.</p>
+        <button class="btn" type="button" onclick="printOne('email')">Print this sign</button>
+      </div>
+    </article>
+    <article class="item">
+      <div class="preview">
+    <div class="sheet s-tent" data-file="tent">
+      <div class="flip">
+      <div class="face">
+        
+    <header class="band short">
+      <img class="bg" src="../assets/print/band-short.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          
+          <h1>Merch · Pay · Email List</h1>
+        </div>
+      </div>
+    </header>
+        <div class="fbody">
+          <div class="qr tent"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div class="fwords">
+            <p class="kick">Scan with your camera</p>
+            <p class="fline"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="fline"><b>PayPal</b><br>jp@jpascual.com</p>
+            <p class="fline"><b>Cash or check</b></p>
+          </div>
+        </div>
+      </div></div>
+      <div class="fold"><span>fold here</span></div>
+      
+      <div class="face">
+        
+    <header class="band short">
+      <img class="bg" src="../assets/print/band-short.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          
+          <h1>Merch · Pay · Email List</h1>
+        </div>
+      </div>
+    </header>
+        <div class="fbody">
+          <div class="qr tent"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div class="fwords">
+            <p class="kick">Scan with your camera</p>
+            <p class="fline"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="fline"><b>PayPal</b><br>jp@jpascual.com</p>
+            <p class="fline"><b>Cash or check</b></p>
+          </div>
+        </div>
+      </div>
+    </div></div>
+      <div class="meta">
+        <h2>Table tent</h2>
+        <p>Fold it in half along the dotted line and it stands up by itself, readable from both sides.</p>
+        <button class="btn" type="button" onclick="printOne('tent')">Print this sign</button>
+      </div>
+    </article>
+    <article class="item">
+      <div class="preview"><div class="sheet s-cards" data-file="cards">
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div></div></div>
+      <div class="meta">
+        <h2>Hand-out cards</h2>
+        <p>Six small cards to a page. Cut along the dotted lines and leave them on the table.</p>
+        <button class="btn" type="button" onclick="printOne('cards')">Print this sign</button>
+      </div>
+    </article>
   </div>
 
-  <footer>
-    Before the show, scan a printed code with your phone from a few feet away
-    in dim light, just to be sure. If you ever need these again, this page is
-    always here.
-  </footer>
+  <details>
+    <summary>Just the QR codes, for a designer</summary>
+    <ul>
+        <li><b>Merch · Pay · Email List</b> &mdash;
+          <a href="booth.svg" download>vector</a> &middot;
+          <a href="booth-print.png" download>image</a></li>
+        <li><b>Join Juanito’s Email List</b> &mdash;
+          <a href="email.svg" download>vector</a> &middot;
+          <a href="email-print.png" download>image</a></li>
+    </ul>
+  </details>
+
+  <footer>Before the show, scan one printed sign with your phone from a few feet
+    away in dim light. If you ever need these again, this page is always here.</footer>
 </div>
 
 <div class="paper">
-
-  <div class="sheet tent" data-file="booth">
-    <div class="head">
-      <h1>Merch & Mailing List</h1>
-      <p class="sub">Prices, how to pay, and the mailing list</p>
-    </div>
-    <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
-</div>
-    <div class="foot">
-      <p class="scan">Scan with your phone camera</p>
-      <p class="who">Juanito Pascual</p>
+    <div class="sheet s-main" data-file="main">
       
-      <p class="link">mjg-music.github.io/juanito-merch</p>
-    </div>
-  </div>
-  <div class="sheet tent" data-file="email">
-    <div class="head">
-      <h1>Join Juanito’s Email List</h1>
-      <p class="sub">Tour dates and new releases</p>
-    </div>
-    <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 51 51" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h51v51H0z"/><path stroke="#000000" d="M3 3.5h7m3 0h2m4 0h1m5 0h1m3 0h6m1 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m3 0h2m2 0h1m1 0h1m1 0h3m2 0h1m1 0h2m1 0h3m1 0h2m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m2 0h1m3 0h1m2 0h2m5 0h1m1 0h2m4 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m4 0h1m1 0h1m1 0h5m2 0h3m1 0h4m1 0h3m1 0h2m1 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m1 0h1m2 0h5m2 0h1m1 0h5m2 0h1m5 0h4m1 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m3 0h2m2 0h1m1 0h3m1 0h1m3 0h3m3 0h1m1 0h2m4 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h1m4 0h2m3 0h1m3 0h3m1 0h2m3 0h4M5 11.5h2m2 0h7m2 0h1m1 0h1m1 0h8m1 0h2m3 0h1m1 0h4m1 0h1M4 12.5h2m1 0h2m4 0h1m2 0h1m5 0h5m2 0h2m1 0h2m1 0h2m1 0h3m3 0h2m1 0h1M4 13.5h1m1 0h1m1 0h3m1 0h1m3 0h2m2 0h2m7 0h2m1 0h4m1 0h1m2 0h3m1 0h1m1 0h2M4 14.5h3m1 0h1m2 0h2m1 0h1m4 0h1m1 0h3m3 0h2m2 0h2m1 0h4m1 0h2m1 0h3m1 0h1M3 15.5h1m3 0h4m3 0h1m2 0h2m1 0h2m1 0h1m3 0h8m9 0h1m1 0h2M5 16.5h2m1 0h1m2 0h2m1 0h4m3 0h2m1 0h1m5 0h1m3 0h3m3 0h6M5 17.5h1m2 0h8m2 0h1m1 0h1m1 0h1m3 0h3m1 0h2m1 0h1m1 0h1m2 0h1m2 0h3m2 0h1M10 18.5h1m1 0h3m1 0h1m2 0h5m1 0h2m2 0h3m1 0h1m1 0h2m2 0h1m2 0h5M3 19.5h1m1 0h5m2 0h3m3 0h1m3 0h1m1 0h1m1 0h6m2 0h4m1 0h4m2 0h2M3 20.5h1m2 0h1m4 0h2m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m4 0h5m3 0h1m1 0h1m2 0h1M4 21.5h2m2 0h3m4 0h1m2 0h1m3 0h2m1 0h4m2 0h5m1 0h2m1 0h2m1 0h1m1 0h2M3 22.5h1m2 0h2m6 0h1m3 0h1m1 0h4m1 0h2m2 0h1m1 0h1m1 0h1m4 0h1m1 0h1m2 0h1m2 0h2M3 23.5h1m1 0h1m1 0h5m1 0h1m1 0h1m3 0h1m3 0h9m1 0h1m2 0h1m2 0h5m1 0h3M3 24.5h2m2 0h1m3 0h1m1 0h1m1 0h2m1 0h3m2 0h1m3 0h2m2 0h2m1 0h1m3 0h2m3 0h2m2 0h1M3 25.5h3m1 0h1m1 0h1m1 0h3m2 0h6m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h6m1 0h1m1 0h1m1 0h3M5 26.5h1m1 0h1m3 0h1m1 0h1m1 0h2m1 0h1m1 0h1m2 0h1m3 0h1m1 0h3m2 0h1m1 0h2m1 0h1m3 0h2m1 0h1M3 27.5h2m2 0h5m2 0h1m2 0h2m4 0h5m1 0h1m3 0h1m2 0h1m2 0h5m3 0h1M3 28.5h3m1 0h2m2 0h1m1 0h5m2 0h1m1 0h1m3 0h1m1 0h1m2 0h2m2 0h1m6 0h1m1 0h3M5 29.5h1m1 0h1m1 0h1m2 0h2m1 0h1m4 0h5m2 0h1m6 0h1m3 0h2m3 0h2M3 30.5h1m1 0h2m1 0h1m1 0h2m1 0h1m8 0h1m1 0h6m2 0h1m2 0h1m1 0h1m1 0h4m1 0h3M5 31.5h3m1 0h2m3 0h1m4 0h3m1 0h1m3 0h4m3 0h5m1 0h1m1 0h4m1 0h1M3 32.5h3m1 0h2m2 0h1m1 0h2m1 0h2m3 0h1m4 0h1m1 0h1m1 0h1m4 0h3m3 0h4m1 0h2M4 33.5h2m2 0h4m2 0h2m5 0h2m1 0h1m1 0h3m4 0h5m1 0h2m1 0h1m1 0h3M5 34.5h3m2 0h1m1 0h1m2 0h3m1 0h4m1 0h5m2 0h2m6 0h1m2 0h1m3 0h2M5 35.5h1m3 0h1m2 0h5m3 0h3m4 0h3m1 0h1m1 0h1m2 0h2m3 0h1m2 0h4M4 36.5h3m3 0h1m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m3 0h1m4 0h1m1 0h2m4 0h2m2 0h2m1 0h1M7 37.5h1m1 0h2m1 0h2m4 0h1m1 0h1m1 0h1m4 0h3m3 0h1m1 0h1m1 0h1m3 0h1m1 0h2m1 0h2M4 38.5h4m3 0h1m1 0h1m1 0h1m1 0h2m2 0h1m3 0h1m1 0h1m1 0h3m1 0h7m3 0h2m2 0h1M3 39.5h1m2 0h2m1 0h1m1 0h1m3 0h1m4 0h1m2 0h6m7 0h1m2 0h6m1 0h2M11 40.5h1m1 0h1m4 0h4m1 0h1m3 0h1m1 0h1m5 0h1m2 0h2m3 0h1m1 0h1M3 41.5h7m1 0h1m3 0h3m3 0h3m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m3 0h1m1 0h1m1 0h3M3 42.5h1m5 0h1m3 0h5m1 0h1m1 0h3m3 0h1m1 0h3m1 0h3m2 0h2m3 0h3m1 0h1M3 43.5h1m1 0h3m1 0h1m3 0h3m1 0h1m5 0h6m1 0h3m1 0h2m2 0h6m1 0h2M3 44.5h1m1 0h3m1 0h1m1 0h2m1 0h3m3 0h1m1 0h3m3 0h1m2 0h2m1 0h4m1 0h2m6 0h1M3 45.5h1m1 0h3m1 0h1m1 0h1m1 0h1m3 0h2m6 0h2m1 0h2m1 0h1m3 0h1m2 0h4m2 0h1M3 46.5h1m5 0h1m2 0h1m1 0h2m2 0h4m4 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h1M3 47.5h7m3 0h1m2 0h4m2 0h1m1 0h7m2 0h2m6 0h2m2 0h1"/></svg>
+    <header class="band">
+      <img class="bg" src="../assets/print/band.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          <p class="kicker">Scan with your phone camera</p>
+          <h1>Merch · Pay · Email List</h1>
+        </div>
+      </div>
+    </header>
+      <div class="body">
+        <p class="lede">Prices, every way to pay, and the email list</p>
+        <div class="qr big"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
 </div>
-    <div class="foot">
-      <p class="scan">Scan with your phone camera</p>
-      <p class="who">Juanito Pascual</p>
+        <p class="aim">Open your camera and point it here</p>
+        <div class="fallback">
+          <p class="kick">Camera won’t scan? Pay by name:</p>
+          
+    <p class="payline">
+      <span><b>Venmo</b> @Juanito-Pascual</span>
+      <span><b>PayPal</b> jp@jpascual.com</span>
+      <span><b>Cash</b> or <b>check</b></span>
+    </p>
+          <p class="url">mjg-music.github.io/juanito-merch</p>
+        </div>
+      </div>
+      <img class="strip" src="../assets/print/strip.jpg" alt="">
+    </div>
+    <div class="sheet s-menu" data-file="menu">
       
-      <p class="link">juanitopascual.com/contact</p>
-    </div>
-  </div>
-  <div class="sheet tent" data-file="pay">
-    <div class="head">
-      <h1>Pay Here</h1>
-      <p class="sub">Venmo, PayPal, cash or check</p>
-    </div>
-    <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 47 47" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h47v47H0z"/><path stroke="#000000" d="M3 3.5h7m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m3 0h1m1 0h1m8 0h7M3 4.5h1m5 0h1m6 0h1m1 0h1m2 0h2m1 0h3m1 0h2m1 0h2m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h5m1 0h5m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m1 0h2m2 0h4m2 0h1m2 0h1m1 0h2m1 0h1m1 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m4 0h1m1 0h3m4 0h1m1 0h1m2 0h1m2 0h1m1 0h2m2 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m4 0h4m2 0h4m1 0h1m1 0h1m4 0h1m2 0h1m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M14 10.5h3m1 0h4m1 0h2m4 0h3m2 0h1M6 11.5h2m1 0h2m1 0h2m2 0h1m1 0h2m1 0h1m1 0h5m4 0h1m1 0h1m5 0h2M3 12.5h1m2 0h2m2 0h2m1 0h1m3 0h1m1 0h1m5 0h3m2 0h1m2 0h2m3 0h2m2 0h1M3 13.5h1m1 0h5m4 0h1m1 0h2m2 0h1m1 0h1m1 0h3m2 0h3m1 0h1m3 0h3m1 0h1M4 14.5h1m7 0h2m3 0h5m3 0h2m1 0h2m2 0h4m3 0h2m1 0h2M3 15.5h2m1 0h2m1 0h1m1 0h2m2 0h1m1 0h3m1 0h2m1 0h6m1 0h1m1 0h1m4 0h1m3 0h2M3 16.5h3m4 0h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h2m2 0h3m2 0h1m1 0h3m2 0h3m2 0h1M4 17.5h1m2 0h3m1 0h1m1 0h2m1 0h2m1 0h2m6 0h3m1 0h8m4 0h1M4 18.5h5m1 0h1m1 0h3m5 0h1m1 0h2m1 0h2m3 0h1m2 0h1m1 0h2m1 0h6M3 19.5h2m3 0h2m1 0h1m2 0h1m1 0h1m1 0h1m2 0h3m3 0h3m5 0h2M6 20.5h1m1 0h1m3 0h1m1 0h1m2 0h1m1 0h1m4 0h4m1 0h8m2 0h1M3 21.5h3m1 0h5m2 0h1m3 0h1m1 0h5m2 0h1m2 0h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1M3 22.5h2m1 0h1m4 0h1m1 0h3m3 0h2m3 0h1m1 0h1m3 0h2m2 0h1m1 0h1m2 0h1m1 0h3M3 23.5h3m1 0h1m1 0h1m3 0h1m3 0h1m1 0h1m1 0h3m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h7M4 24.5h1m2 0h2m1 0h1m1 0h1m2 0h3m2 0h1m1 0h3m2 0h1m2 0h3m1 0h1m1 0h1m2 0h1M3 25.5h1m2 0h1m1 0h2m1 0h7m4 0h1m1 0h2m1 0h5m1 0h1m1 0h1m1 0h1m1 0h3M4 26.5h1m1 0h1m10 0h3m1 0h6m1 0h1m1 0h1m1 0h2m2 0h1m1 0h2M4 27.5h1m2 0h3m3 0h1m10 0h3m1 0h1m2 0h1m3 0h3m2 0h2M5 28.5h4m2 0h2m2 0h3m1 0h1m1 0h1m3 0h2m3 0h4m1 0h1m1 0h3m1 0h1m1 0h1M3 29.5h2m2 0h1m1 0h1m3 0h2m1 0h3m1 0h2m1 0h1m5 0h2m1 0h1m1 0h7m2 0h1M3 30.5h1m3 0h1m3 0h5m1 0h1m2 0h2m4 0h1m2 0h1m3 0h2m1 0h2m2 0h2m1 0h1M4 31.5h1m2 0h4m2 0h2m2 0h1m2 0h2m9 0h1m2 0h3m1 0h1m1 0h1m1 0h1M3 32.5h1m1 0h2m1 0h1m3 0h3m1 0h1m1 0h1m3 0h2m1 0h1m2 0h2m1 0h3m1 0h3m1 0h1m2 0h1M3 33.5h2m1 0h1m2 0h1m3 0h1m6 0h1m2 0h2m1 0h3m1 0h1m2 0h1m1 0h2m1 0h1m4 0h1M3 34.5h2m5 0h3m3 0h1m2 0h1m1 0h1m1 0h3m1 0h3m7 0h2m1 0h2m1 0h1M3 35.5h2m1 0h4m2 0h3m2 0h2m2 0h2m1 0h2m1 0h1m1 0h4m2 0h8M11 36.5h3m1 0h6m1 0h1m2 0h1m3 0h5m1 0h1m3 0h2m1 0h1M3 37.5h7m1 0h1m4 0h1m2 0h1m2 0h1m5 0h3m3 0h2m1 0h1m1 0h1M3 38.5h1m5 0h1m2 0h4m3 0h3m2 0h1m4 0h1m1 0h1m1 0h3m3 0h2m1 0h2M3 39.5h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h6m1 0h1m1 0h5m1 0h2m1 0h7m2 0h1M3 40.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h2m2 0h1m4 0h3m1 0h1m1 0h1m2 0h1m4 0h1M3 41.5h1m1 0h3m1 0h1m2 0h1m1 0h4m3 0h3m4 0h1m1 0h1m1 0h1m2 0h2m1 0h6M3 42.5h1m5 0h1m2 0h3m1 0h5m1 0h2m1 0h2m4 0h1m4 0h2m1 0h2m2 0h1M3 43.5h7m2 0h5m1 0h1m4 0h1m4 0h2m3 0h4m2 0h1m1 0h1"/></svg>
+    <header class="band">
+      <img class="bg" src="../assets/print/band.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          <p class="kicker">Fire. Elegance. Soul.</p>
+          <h1>Take the Music Home</h1>
+        </div>
+      </div>
+    </header>
+      <div class="body">
+        <div class="cols">
+          <div class="list"><section class="grp"><h2>CDs</h2>
+        <div class="row"><span class="lab">1 CD</span><span class="dots"></span><span class="price">$20</span></div>
+        <div class="row"><span class="lab">2 CDs</span><span class="dots"></span><span class="price">$30</span></div>
+        <div class="row"><span class="lab">3 CDs</span><span class="dots"></span><span class="price">$40</span></div><p class="titles"><span>New Flamenco Trio</span> · <span>Language of the Heart</span> · <span>Cosas en Com&uacute;n</span></p></section><section class="grp"><h2>Method Book</h2>
+        <div class="row"><span class="lab">The Total Flamenco Guitarist</span><span class="dots"></span><span class="price">$25</span></div></section><section class="grp"><h2>New Album</h2><p class="soon">Gold &amp; Rose &mdash; out February 2027 on Mot&eacute;ma Music</p></section></div>
+          <img class="trio" src="../assets/print/trio.webp" alt="">
+        </div>
+        <p class="deal">All three CDs for $40 · Save $20</p>
+        
+        <blockquote><p>“A flamenco phenom.”</p><cite>The Boston Globe</cite></blockquote>
+        <div class="foot">
+          <div class="qr small"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
 </div>
-    <div class="foot">
-      <p class="scan">Scan with your phone camera</p>
-      <p class="who">Juanito Pascual</p>
+          <div>
+            <p class="kick">Scan to pay — or pay by name</p>
+            
+    <p class="payline">
+      <span><b>Venmo</b> @Juanito-Pascual</span>
+      <span><b>PayPal</b> jp@jpascual.com</span>
+      <span><b>Cash</b> or <b>check</b></span>
+    </p>
+          </div>
+        </div>
+      </div>
+      <img class="strip" src="../assets/print/strip.jpg" alt="">
+    </div>
+    <div class="sheet s-pay" data-file="pay">
       
-      <p class="link">mjg-music.github.io/juanito-merch</p>
+    <header class="band">
+      <img class="bg" src="../assets/print/band.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          <p class="kicker">Venmo · PayPal · Cash or check</p>
+          <h1>Pay Any Way You Like</h1>
+        </div>
+      </div>
+    </header>
+      <div class="body">
+        
+        <div class="method">
+          <h2>Venmo</h2>
+          <div><p class="big">@Juanito-Pascual</p><p class="small">Search Juanito-Pascual in the Venmo app</p></div>
+        </div>
+        <div class="method">
+          <h2>PayPal</h2>
+          <div><p class="big">jp@jpascual.com</p><p class="small">Shows up as <b>Three Columns Music</b></p></div>
+        </div>
+        <div class="method">
+          <h2>Cash or check</h2>
+          <div><p class="big">Checks payable to <b>Three Columns Music</b></p><p class="small">Cash is great too — right here at the table</p></div>
+        </div>
+        <div class="foot">
+          <div class="qr mid"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="kick">Or scan it</p>
+            <p class="say">See the prices and pay from your phone.</p>
+          </div>
+        </div>
+      </div>
+      <img class="strip" src="../assets/print/strip.jpg" alt="">
     </div>
-  </div>
-
-  <div class="sheet cards" data-file="cards">
-    <div class="handcard">
-      <div class="cap">Merch & Mailing List</div>
-      <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+    <div class="sheet s-email" data-file="email">
+      
+    <header class="band">
+      <img class="bg" src="../assets/print/band.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          <p class="kicker">Tour dates and new releases</p>
+          <h1>Join Juanito’s Email List</h1>
+        </div>
+      </div>
+    </header>
+      <div class="body">
+        <p class="pitch">Be the first to hear Gold &amp; Rose</p>
+        <p class="pitchsub">The new album · February 2027 · Motéma Music</p>
+        <div class="qr big"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 51 51" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h51v51H0z"/><path stroke="#000000" d="M3 3.5h7m3 0h2m4 0h1m5 0h1m3 0h6m1 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m3 0h2m2 0h1m1 0h1m1 0h3m2 0h1m1 0h2m1 0h3m1 0h2m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m2 0h1m3 0h1m2 0h2m5 0h1m1 0h2m4 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m4 0h1m1 0h1m1 0h5m2 0h3m1 0h4m1 0h3m1 0h2m1 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m1 0h1m2 0h5m2 0h1m1 0h5m2 0h1m5 0h4m1 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m3 0h2m2 0h1m1 0h3m1 0h1m3 0h3m3 0h1m1 0h2m4 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h1m4 0h2m3 0h1m3 0h3m1 0h2m3 0h4M5 11.5h2m2 0h7m2 0h1m1 0h1m1 0h8m1 0h2m3 0h1m1 0h4m1 0h1M4 12.5h2m1 0h2m4 0h1m2 0h1m5 0h5m2 0h2m1 0h2m1 0h2m1 0h3m3 0h2m1 0h1M4 13.5h1m1 0h1m1 0h3m1 0h1m3 0h2m2 0h2m7 0h2m1 0h4m1 0h1m2 0h3m1 0h1m1 0h2M4 14.5h3m1 0h1m2 0h2m1 0h1m4 0h1m1 0h3m3 0h2m2 0h2m1 0h4m1 0h2m1 0h3m1 0h1M3 15.5h1m3 0h4m3 0h1m2 0h2m1 0h2m1 0h1m3 0h8m9 0h1m1 0h2M5 16.5h2m1 0h1m2 0h2m1 0h4m3 0h2m1 0h1m5 0h1m3 0h3m3 0h6M5 17.5h1m2 0h8m2 0h1m1 0h1m1 0h1m3 0h3m1 0h2m1 0h1m1 0h1m2 0h1m2 0h3m2 0h1M10 18.5h1m1 0h3m1 0h1m2 0h5m1 0h2m2 0h3m1 0h1m1 0h2m2 0h1m2 0h5M3 19.5h1m1 0h5m2 0h3m3 0h1m3 0h1m1 0h1m1 0h6m2 0h4m1 0h4m2 0h2M3 20.5h1m2 0h1m4 0h2m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m4 0h5m3 0h1m1 0h1m2 0h1M4 21.5h2m2 0h3m4 0h1m2 0h1m3 0h2m1 0h4m2 0h5m1 0h2m1 0h2m1 0h1m1 0h2M3 22.5h1m2 0h2m6 0h1m3 0h1m1 0h4m1 0h2m2 0h1m1 0h1m1 0h1m4 0h1m1 0h1m2 0h1m2 0h2M3 23.5h1m1 0h1m1 0h5m1 0h1m1 0h1m3 0h1m3 0h9m1 0h1m2 0h1m2 0h5m1 0h3M3 24.5h2m2 0h1m3 0h1m1 0h1m1 0h2m1 0h3m2 0h1m3 0h2m2 0h2m1 0h1m3 0h2m3 0h2m2 0h1M3 25.5h3m1 0h1m1 0h1m1 0h3m2 0h6m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h6m1 0h1m1 0h1m1 0h3M5 26.5h1m1 0h1m3 0h1m1 0h1m1 0h2m1 0h1m1 0h1m2 0h1m3 0h1m1 0h3m2 0h1m1 0h2m1 0h1m3 0h2m1 0h1M3 27.5h2m2 0h5m2 0h1m2 0h2m4 0h5m1 0h1m3 0h1m2 0h1m2 0h5m3 0h1M3 28.5h3m1 0h2m2 0h1m1 0h5m2 0h1m1 0h1m3 0h1m1 0h1m2 0h2m2 0h1m6 0h1m1 0h3M5 29.5h1m1 0h1m1 0h1m2 0h2m1 0h1m4 0h5m2 0h1m6 0h1m3 0h2m3 0h2M3 30.5h1m1 0h2m1 0h1m1 0h2m1 0h1m8 0h1m1 0h6m2 0h1m2 0h1m1 0h1m1 0h4m1 0h3M5 31.5h3m1 0h2m3 0h1m4 0h3m1 0h1m3 0h4m3 0h5m1 0h1m1 0h4m1 0h1M3 32.5h3m1 0h2m2 0h1m1 0h2m1 0h2m3 0h1m4 0h1m1 0h1m1 0h1m4 0h3m3 0h4m1 0h2M4 33.5h2m2 0h4m2 0h2m5 0h2m1 0h1m1 0h3m4 0h5m1 0h2m1 0h1m1 0h3M5 34.5h3m2 0h1m1 0h1m2 0h3m1 0h4m1 0h5m2 0h2m6 0h1m2 0h1m3 0h2M5 35.5h1m3 0h1m2 0h5m3 0h3m4 0h3m1 0h1m1 0h1m2 0h2m3 0h1m2 0h4M4 36.5h3m3 0h1m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m3 0h1m4 0h1m1 0h2m4 0h2m2 0h2m1 0h1M7 37.5h1m1 0h2m1 0h2m4 0h1m1 0h1m1 0h1m4 0h3m3 0h1m1 0h1m1 0h1m3 0h1m1 0h2m1 0h2M4 38.5h4m3 0h1m1 0h1m1 0h1m1 0h2m2 0h1m3 0h1m1 0h1m1 0h3m1 0h7m3 0h2m2 0h1M3 39.5h1m2 0h2m1 0h1m1 0h1m3 0h1m4 0h1m2 0h6m7 0h1m2 0h6m1 0h2M11 40.5h1m1 0h1m4 0h4m1 0h1m3 0h1m1 0h1m5 0h1m2 0h2m3 0h1m1 0h1M3 41.5h7m1 0h1m3 0h3m3 0h3m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m3 0h1m1 0h1m1 0h3M3 42.5h1m5 0h1m3 0h5m1 0h1m1 0h3m3 0h1m1 0h3m1 0h3m2 0h2m3 0h3m1 0h1M3 43.5h1m1 0h3m1 0h1m3 0h3m1 0h1m5 0h6m1 0h3m1 0h2m2 0h6m1 0h2M3 44.5h1m1 0h3m1 0h1m1 0h2m1 0h3m3 0h1m1 0h3m3 0h1m2 0h2m1 0h4m1 0h2m6 0h1M3 45.5h1m1 0h3m1 0h1m1 0h1m1 0h1m3 0h2m6 0h2m1 0h2m1 0h1m3 0h1m2 0h4m2 0h1M3 46.5h1m5 0h1m2 0h1m1 0h2m2 0h4m4 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h1M3 47.5h7m3 0h1m2 0h4m2 0h1m1 0h7m2 0h2m6 0h2m2 0h1"/></svg>
 </div>
-      <div class="name">Juanito Pascual</div>
-      <div class="link">mjg-music.github.io/juanito-merch</div>
-    </div><div class="handcard">
-      <div class="cap">Merch & Mailing List</div>
-      <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
-</div>
-      <div class="name">Juanito Pascual</div>
-      <div class="link">mjg-music.github.io/juanito-merch</div>
-    </div><div class="handcard">
-      <div class="cap">Merch & Mailing List</div>
-      <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
-</div>
-      <div class="name">Juanito Pascual</div>
-      <div class="link">mjg-music.github.io/juanito-merch</div>
-    </div><div class="handcard">
-      <div class="cap">Merch & Mailing List</div>
-      <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
-</div>
-      <div class="name">Juanito Pascual</div>
-      <div class="link">mjg-music.github.io/juanito-merch</div>
-    </div><div class="handcard">
-      <div class="cap">Merch & Mailing List</div>
-      <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
-</div>
-      <div class="name">Juanito Pascual</div>
-      <div class="link">mjg-music.github.io/juanito-merch</div>
-    </div><div class="handcard">
-      <div class="cap">Merch & Mailing List</div>
-      <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
-</div>
-      <div class="name">Juanito Pascual</div>
-      <div class="link">mjg-music.github.io/juanito-merch</div>
+        <p class="aim">Open your camera and point it here</p>
+        <p class="or">or go to <b>juanitopascual.com/contact</b></p>
+      </div>
+      <img class="strip" src="../assets/print/strip.jpg" alt="">
     </div>
-  </div>
+    <div class="sheet s-tent" data-file="tent">
+      <div class="flip">
+      <div class="face">
+        
+    <header class="band short">
+      <img class="bg" src="../assets/print/band-short.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          
+          <h1>Merch · Pay · Email List</h1>
+        </div>
+      </div>
+    </header>
+        <div class="fbody">
+          <div class="qr tent"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div class="fwords">
+            <p class="kick">Scan with your camera</p>
+            <p class="fline"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="fline"><b>PayPal</b><br>jp@jpascual.com</p>
+            <p class="fline"><b>Cash or check</b></p>
+          </div>
+        </div>
+      </div></div>
+      <div class="fold"><span>fold here</span></div>
+      
+      <div class="face">
+        
+    <header class="band short">
+      <img class="bg" src="../assets/print/band-short.jpg" alt="">
+      <div class="in">
+        <img class="logo" src="../assets/print/logo-cream.png" alt="Juanito Pascual Trio">
+        <div class="words">
+          
+          <h1>Merch · Pay · Email List</h1>
+        </div>
+      </div>
+    </header>
+        <div class="fbody">
+          <div class="qr tent"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div class="fwords">
+            <p class="kick">Scan with your camera</p>
+            <p class="fline"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="fline"><b>PayPal</b><br>jp@jpascual.com</p>
+            <p class="fline"><b>Cash or check</b></p>
+          </div>
+        </div>
+      </div>
+    </div><div class="sheet s-cards" data-file="cards">
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cband"><img src="../assets/print/band-short.jpg" alt=""><span>Merch · Pay · Email List</span></div>
+        <div class="cbody">
+          <div class="qr cqr"><svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 43 43" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h43v43H0z"/><path stroke="#000000" d="M3 3.5h7m1 0h2m3 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m2 0h1m1 0h7M3 4.5h1m5 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h3m1 0h1m2 0h1m5 0h1M3 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h6m2 0h1m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M3 6.5h1m1 0h3m1 0h1m5 0h1m4 0h4m2 0h4m3 0h1m1 0h3m1 0h1M3 7.5h1m1 0h3m1 0h1m2 0h2m1 0h3m5 0h1m2 0h4m3 0h1m1 0h3m1 0h1M3 8.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h6m2 0h2m1 0h1m5 0h1M3 9.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 10.5h1m1 0h2m8 0h2m1 0h1m4 0h1M5 11.5h3m1 0h1m1 0h1m1 0h3m1 0h7m1 0h1m1 0h2m3 0h3m2 0h3M3 12.5h1m1 0h3m2 0h1m1 0h1m5 0h3m1 0h7m2 0h1m2 0h1m3 0h1M3 13.5h1m1 0h5m2 0h2m1 0h3m1 0h1m4 0h1m3 0h4m1 0h2m1 0h1m1 0h2M3 14.5h2m2 0h1m2 0h4m1 0h1m1 0h1m4 0h3m1 0h2m1 0h1m3 0h3m3 0h1M4 15.5h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h2m1 0h3M3 16.5h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h4m1 0h2m5 0h2m1 0h1m1 0h2M3 17.5h1m1 0h5m2 0h3m3 0h2m1 0h1m2 0h8m1 0h1m1 0h2m2 0h1M3 18.5h1m2 0h1m4 0h3m2 0h2m3 0h3m5 0h1m1 0h2m1 0h2m2 0h1M3 19.5h7m1 0h1m2 0h2m2 0h1m2 0h3m2 0h1m1 0h2m2 0h4m1 0h3M3 20.5h1m1 0h1m2 0h1m1 0h1m4 0h2m1 0h1m1 0h4m3 0h1m6 0h1m2 0h1M4 21.5h2m1 0h7m2 0h1m1 0h2m1 0h1m1 0h3m3 0h3m2 0h1m3 0h2M3 22.5h6m3 0h1m2 0h1m1 0h2m3 0h1m3 0h1m2 0h1m2 0h3M4 23.5h2m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m1 0h3m1 0h6M3 24.5h1m1 0h1m1 0h2m3 0h2m3 0h2m2 0h2m1 0h2m1 0h2m5 0h1m3 0h1M4 25.5h1m2 0h4m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h2m4 0h2M4 26.5h1m1 0h3m1 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h3m3 0h2M3 27.5h3m2 0h3m3 0h3m1 0h1m2 0h1m1 0h2m7 0h2m1 0h3M3 28.5h1m2 0h3m2 0h1m1 0h2m3 0h5m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1M3 29.5h1m1 0h3m1 0h3m3 0h1m1 0h2m2 0h1m3 0h1m3 0h2m2 0h2m2 0h3M3 30.5h1m4 0h1m4 0h2m1 0h5m1 0h3m2 0h1m1 0h1m2 0h1m1 0h3m2 0h1M3 31.5h1m3 0h5m2 0h2m1 0h2m2 0h4m2 0h13M11 32.5h2m1 0h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m3 0h1M3 33.5h7m2 0h1m2 0h1m2 0h2m1 0h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h2m1 0h2M3 34.5h1m5 0h1m2 0h6m2 0h2m1 0h1m2 0h1m2 0h3m3 0h1M3 35.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m3 0h13m1 0h1M3 36.5h1m1 0h3m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h1M3 37.5h1m1 0h3m1 0h1m1 0h1m5 0h1m1 0h2m2 0h2m1 0h2m3 0h2m6 0h1M3 38.5h1m5 0h1m2 0h1m6 0h3m1 0h4m2 0h3m3 0h1m3 0h1M3 39.5h7m2 0h2m1 0h1m1 0h2m2 0h1m2 0h6m2 0h2m3 0h3"/></svg>
+</div>
+          <div>
+            <p class="cname">Juanito Pascual</p>
+            <p class="cpay"><b>Venmo</b><br>@Juanito-Pascual</p>
+            <p class="curl">mjg-music.github.io/juanito-merch</p>
+          </div>
+        </div>
+      </div></div>
 </div>
 
 <script>
-  var SHEETS = document.querySelectorAll('.sheet');
+  // Shrink each full-size sheet to fit its preview box.
+  function fit() {
+    document.querySelectorAll('.preview').forEach(function (p) {
+      var s = p.firstElementChild;
+      s.style.transform = 'scale(' + (p.clientWidth / s.offsetWidth) + ')';
+    });
+  }
+  fit();
+  window.addEventListener('resize', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+
+  var SHEETS = document.querySelectorAll('.paper .sheet');
   function show(only) {
     SHEETS.forEach(function (s) {
       s.classList.toggle('skip', !!only && s.dataset.file !== only);

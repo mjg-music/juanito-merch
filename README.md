@@ -35,7 +35,7 @@ either of these works:
   QR codes**. Save the image and text it to Mike.
 
 Mike pastes whichever you send into one spot in `config.js`, and PayPal becomes
-a real button on the page — like Venmo — plus a printed sign of its own.
+a real button on the page — like Venmo.
 
 Until then the page shows the PayPal address with a **Copy** button, and notes
 that it shows up as **Three Columns Music**, so nobody wonders if they've got
@@ -77,15 +77,17 @@ passwords or keys in it — just the page and the QR script.
 npm run qr
 ```
 
-It reads the URLs straight out of `config.js` and builds **three** codes:
+It reads the URLs straight out of `config.js` and builds **two** codes — on
+purpose, since three at one table confused people:
 
 | Code | Goes to |
 |---|---|
-| `booth` | the merch page (the main one for the table) |
+| `booth` | the merch page: prices, every way to pay, the email list |
 | `email` | the mailing-list signup, straight to his site |
-| `venmo` | his Venmo profile |
 
-A `paypal` code gets added automatically once `paypalLink` in `config.js` is filled in.
+Venmo and PayPal don't get codes of their own. They're one tap from the booth
+code, and their handles are printed in words on the signs for anyone whose
+camera won't scan.
 
 For each one you get `name.svg` (vector, for print), `name-print.png` (2400px,
 large signs), and `name-screen.png` (600px, for Instagram or a text).
@@ -93,9 +95,11 @@ large signs), and `name-screen.png` (600px, for Instagram or a text).
 Everything lands in `print/`, which is part of the site. That means
 **<https://mjg-music.github.io/juanito-merch/print/> is Juanito's own page** —
 send him that link and he can print his own signs from a phone or laptop,
-forever, without asking anyone. One button prints a full-page table tent for
-each code plus a page of six hand-out cards; the download links give him the
-image files for a print shop.
+forever, without asking anyone. It shows a preview of each sign with its own
+Print button: the main scan sign, a merch menu, a how-to-pay sign, the email
+list sign, a table tent that folds in half and stands up, and a page of six
+hand-out cards. All of it is in his EPK branding, and all the words and prices
+come from `config.js` — change a price there and the menu follows.
 
 If a URL is still a placeholder, that code is skipped and the script tells you
 which one.

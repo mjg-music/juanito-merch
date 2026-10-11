@@ -29,8 +29,12 @@ config.js      ALL editable content: merch, prices, payment handles, QR targets.
                The only file a non-developer touches.
 index.html     Markup shell + every style rule. No build step.
 app.js         Renders config.js into the page. Pure DOM, no framework.
-qr/make-qr.js  `npm run qr` -> one SVG + two PNGs per QR target, plus a
-               printable sheet. Reads its URLs from config.js.
+qr/make-qr.js  `npm run qr` -> one SVG + two PNGs per QR target, then hands
+               them to signs.js. Reads its URLs from config.js.
+qr/signs.js    Builds print/index.html: every printable sign, in the EPK
+               branding. Layout only — all words and prices come from config.
+assets/print/  Brand images for the signs only (baked from the EPK). Never
+               loaded by the booth page, so they don't count against its budget.
 vercel.json    Static deploy config.
 README.md      Setup steps written for Juanito, not for an engineer.
 ```
@@ -69,7 +73,8 @@ README.md      Setup steps written for Juanito, not for an engineer.
   make an in-person QR code in the PayPal Business app (More → Get paid with
   QR codes) and send the image. Either value goes in `paypalLink` at the top of
   `config.js`; that single switch flips the row from `type: "copy"` to a real
-  button *and* makes `npm run qr` build a `paypal` sign. Until then the row
+  button. It deliberately does **not** add a PayPal QR code (see the two-code
+  rule under QR rules); the address is printed in words instead. Until then the row
   shows the address with a Copy button and says it shows up as Three Columns
   Music, so the buyer isn't thrown by an unfamiliar name at checkout.
 
@@ -144,11 +149,31 @@ delete one.
 part of the site at `<site>/print/`. That page is Juanito's: he opens it on his
 phone and prints his own signage without going through anyone.
 
-It is one document doing two jobs. `.screen` elements are the download page;
-`.paper` elements are the signage, revealed only inside `@media print`. So
-there is exactly one URL to remember and no separate PDF to keep in sync. The
-QR codes are inline SVG in both views, so printing never waits on an image
+It is one document doing two jobs. On screen, each sign shows as a live,
+scaled-down preview with its own **Print this sign** button; `.paper` holds the
+same sheets at full size, revealed only inside `@media print`. Previews and
+paper share markup and CSS, so what he sees is what prints. One URL, no PDF to
+keep in sync. QR codes are inline SVG, so printing never waits on an image
 fetch and never prints a blurry raster.
+
+The signs (all `qr/signs.js`, US Letter): main scan sign, merch menu (bundle
+deal is *computed* from the CD tiers, never typed), how-to-pay, email list,
+a fold-in-half table tent, and six hand-out cards. They use Juanito's **EPK
+branding** — Bebas Neue (self-hosted, OFL), gold `#c8963c`, purple `#5a2d8c`,
+cream, the guitar mandala and the cream trio logo — deliberately distinct from
+the booth page's wine-and-gold, which is tuned for a dim phone screen, not paper.
+
+Paper-specific rules learned the hard way:
+- `print-color-adjust: exact` on every sheet, or Safari drops the colour bands.
+- Darken artwork into the image file itself (`assets/print/band*.jpg`) rather
+  than with a CSS overlay, so type stays readable even if a browser skips
+  backgrounds.
+- Every sign that asks for money also prints the Venmo handle, PayPal address
+  and check payee **in words** — at the first show a buyer's camera wouldn't
+  focus, and the code was the only way in.
+- Sheets are 7.6 × 10in inside 0.4in margins; leave that slack, since iOS
+  AirPrint applies its own margins. `npm run qr` then a Chrome print-to-PDF
+  must give exactly one page per sheet.
 
 Write its copy for someone who does not think of himself as technical: short
 numbered steps, no jargon, and never reference a file path or a terminal. It is
@@ -161,7 +186,11 @@ numbered steps, no jargon, and never reference a file path or a terminal. It is
   code fails under stage lighting.
 - Ship vector (`.svg`) for anything printed; PNG is for screens only.
 - `qr.codes` in `config.js` drives the generator. Each entry is either
-  `use: "siteUrl"` (the deployed page) or a literal `url`.
+  `use: "siteUrl"` (the deployed page, optionally with `anchor`) or a literal `url`.
+- **Two codes, never more:** `booth` (everything) and `email` (sign-up). Three
+  different codes on one table confused buyers at the first show. A new way to
+  pay is a row on the booth page plus its handle printed in words — not a code.
+- Tent faces: the top half is rotated 180°, so both read upright once folded.
 - Codes must be **physically scan-tested** after printing: real phone, three
   feet, dim light.
 

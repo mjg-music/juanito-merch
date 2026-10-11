@@ -93,7 +93,9 @@ window.SITE = {
       heading: "New Album",
       soon: true,
       soonNote: "Gold &amp; Rose &mdash; out February 2027. " +
-                "Join the mailing list below to hear first."
+                "Join the mailing list below to hear first.",
+      // The printed menu can't say "below", so it gets its own line.
+      signNote: "Gold &amp; Rose &mdash; out February 2027 on Mot&eacute;ma Music"
     }
     // T-SHIRTS: when they exist, copy the Method Book block above,
     // change the heading to "T-Shirts" and list sizes + price.
@@ -110,7 +112,9 @@ window.SITE = {
       id: "venmo",
       label: "Venmo",
       sub: "@Juanito-Pascual",
-      url: "https://venmo.com/u/Juanito-Pascual"
+      url: "https://venmo.com/u/Juanito-Pascual",
+      // Printed under the handle on the signs, for when a camera won't scan.
+      hint: "Search Juanito-Pascual in the Venmo app"
     },
     {
       // Becomes a real button by itself once paypalLink (top of this
@@ -125,7 +129,8 @@ window.SITE = {
       type: "info",
       id: "cash",
       label: "Cash or check",
-      sub: "Checks payable to <b>Three Columns Music</b>"
+      sub: "Checks payable to <b>Three Columns Music</b>",
+      hint: "Cash is great too \u2014 right here at the table"
     }
   ],
 
@@ -170,28 +175,44 @@ window.SITE = {
      Everything else is already correct.                      */
   qr: {
     siteUrl: "https://mjg-music.github.io/juanito-merch/",
-    /* Each entry below becomes one printed sign.
-         label  the BIG headline across the top of the sign — keep it to a
-                few words, it is what someone reads walking past
-         sub    the smaller line under the headline
-         note   only appears on your own print page, not on the sign       */
+    /* TWO codes, on purpose. Three at one table confused people at the
+       Saturday show, so every sign uses one of these two:
+         booth  everything: prices, how to pay, and the email list
+         email  straight to the sign-up form
+       label  the big words on the sign — a few words, read walking past
+       sub    the smaller line under it
+       note   shows on your print page only, never on a sign            */
     codes: [
-      { file: "booth", label: "Merch &amp; Mailing List",
-        sub: "Prices, how to pay, and the mailing list",
-        note: "The main one. Put this on the table \u2014 it opens the page with prices, payment and the mailing list.",
+      { file: "booth", label: "Merch \u00b7 Pay \u00b7 Email List",
+        sub: "Prices, every way to pay, and the email list",
+        note: "The main one \u2014 everything is behind this code.",
         use: "siteUrl" },
       { file: "email", label: "Join Juanito\u2019s Email List",
         sub: "Tour dates and new releases",
         note: "Goes straight to the sign-up on juanitopascual.com.",
-        url: "https://juanitopascual.com/contact#mailing_list_feature_436168" },
-      { file: "pay", label: "Pay Here",
-        sub: "Venmo, PayPal, cash or check",
-        note: "Opens the page scrolled to the payment options, so the buyer picks \u2014 nobody is forced into Venmo.",
-        use: "siteUrl", anchor: "pay" }
-      // Want a code that jumps STRAIGHT into Venmo as well? Add this line:
-      //   { file: "venmo", label: "Pay by Venmo", sub: "@Juanito-Pascual",
-      //     note: "Opens Venmo directly.", url: "https://venmo.com/u/Juanito-Pascual" }
-      // The PayPal code adds itself once paypalLink is filled in at the top.
+        url: "https://juanitopascual.com/contact#mailing_list_feature_436168" }
+      // Please don't add a third. PayPal and Venmo are both reachable from
+      // the booth code, and their handles are printed in words on the signs.
     ]
+  },
+
+  /* --- Words on the printed signs ----------------------------
+     Edit freely. Prices and payment details are NOT here — the signs
+     read those from the merch and payments sections above, so the
+     page and the paper can never disagree.                       */
+  signs: {
+    // Real press, from his EPK. Set quote: "" to leave it off.
+    quote: "A flamenco phenom.",
+    quoteBy: "The Boston Globe",
+    tagline: "Fire. Elegance. Soul.",
+    menuHeadline: "Take the Music Home",
+    payHeadline: "Pay Any Way You Like",
+    // The reason to sign up, printed big on the email sign.
+    emailPitch: "Be the first to hear Gold &amp; Rose",
+    emailPitchSub: "The new album \u00b7 February 2027 \u00b7 Mot\u00e9ma Music",
+    // Optional. Only fill this in if it's TRUE every night, e.g.
+    //   "Ask Juanito to sign it after the show"
+    // Leave "" and nothing prints.
+    perk: ""
   }
 };
