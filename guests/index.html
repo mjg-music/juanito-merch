@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guest list — Juanito Pascual</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1a0d12">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' x='4' font-size='26'>📋</text></svg>">
+<!--
+  Juanito's guest list page. He types names on his phone, it prints a clean
+  list for whoever is working the door, with blank lines at the bottom for
+  names that turn up at the last minute.
+
+  Same rules as the rest of the site: no build step, no framework, nothing
+  loaded from another host. Names are saved in this phone's browser only
+  (localStorage) so a reload mid-typing loses nothing; they are never sent
+  anywhere. Artist and venue come from ../config.js.
+
+  One document, two jobs: .screen is the typing page, .paper is the printout
+  and only exists inside @media print.
+-->
+<style>
+  @font-face{font-family:"Bebas Neue";font-weight:400;font-display:swap;
+    src:url("../assets/fonts/bebas-neue.woff2") format("woff2")}
+  @font-face{font-family:"Cormorant Garamond";font-style:normal;font-weight:600;font-display:swap;
+    src:url("../assets/fonts/cormorant-600.woff2") format("woff2")}
+
+  :root{
+    --ink:#1a0d12;--gold:#dcb468;--gold-bright:#f4d79a;--muted:#d2bcc4;
+    --paper:#faf4ee;--line:rgba(220,180,104,.26);--rose-soft:#eda7b7;
+    --display:"Cormorant Garamond",Georgia,serif;
+    --body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+    --bebas:"Bebas Neue","Arial Narrow",Impact,sans-serif;
+    --tap:62px;--radius:15px;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(120% 70% at 50% -10%,#3a1a26 0%,transparent 60%),var(--ink);
+    background-attachment:fixed;color:var(--paper);
+    font-family:var(--body);font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;min-height:100vh;min-height:100dvh;
+  }
+  a,button,input,select,textarea,label{touch-action:manipulation}
+
+  .wrap{width:100%;max-width:620px;margin:0 auto;
+    padding:clamp(26px,6vw,46px) 16px calc(44px + env(safe-area-inset-bottom))}
+  h1{font-family:var(--display);font-weight:600;font-size:clamp(34px,9vw,44px);line-height:1.05;margin:0 0 10px}
+  .lede{color:var(--muted);margin:0 0 24px;max-width:520px}
+  .lede b{color:var(--gold-bright)}
+
+  .field{display:block;margin:0 0 18px}
+  .field>span{display:block;font-size:12px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+  input[type=text],textarea,select{
+    width:100%;font:inherit;font-size:17px;color:var(--paper);
+    background:rgba(250,244,238,.06);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;min-height:var(--tap);-webkit-appearance:none;appearance:none;
+  }
+  textarea{min-height:240px;line-height:1.6;resize:vertical}
+  input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible{
+    outline:3px solid var(--gold-bright);outline-offset:2px}
+  .count{font-size:15px;color:var(--muted);margin:-8px 0 20px}
+  .count b{color:var(--gold-bright)}
+
+  .opts{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;margin:0 0 22px}
+  .opts label{display:flex;align-items:center;gap:10px;min-height:46px;font-size:16px}
+  .opts select{width:auto;min-height:46px;padding:8px 36px 8px 14px;font-size:16px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 8l5 5 5-5' fill='none' stroke='%23dcb468' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 12px center;background-size:16px}
+  .opts input[type=checkbox]{width:24px;height:24px;accent-color:var(--gold)}
+
+  .stack{display:flex;flex-direction:column;gap:12px;margin:0 0 24px}
+  .btn{display:flex;align-items:center;justify-content:center;min-height:var(--tap);width:100%;
+    padding:14px 18px;font:inherit;font-size:18px;font-weight:600;cursor:pointer;
+    border:1px solid var(--line);border-radius:var(--radius);
+    background:rgba(250,244,238,.06);color:var(--paper);-webkit-tap-highlight-color:transparent}
+  .btn:active{filter:brightness(1.15)}
+  .btn.primary{background:linear-gradient(140deg,var(--gold) 0%,#c99a4c 100%);
+    border-color:var(--gold-bright);color:#20101a;font-size:19px;
+    box-shadow:0 10px 28px -14px rgba(220,180,104,.75)}
+  .btn.quiet{background:transparent;border-style:dashed;color:var(--muted);font-weight:500}
+
+  .preview-wrap{margin:0 0 24px}
+  .preview-wrap>span{display:block;font-size:12px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  .preview{position:relative;width:100%;aspect-ratio:7.6/10;overflow:hidden;border-radius:8px;
+    background:#fff;border:1px solid var(--line)}
+  .preview>.sheet{position:absolute;top:0;left:0;transform-origin:0 0}
+  .preview .more{position:absolute;left:0;right:0;bottom:0;padding:10px;text-align:center;
+    font-size:14px;color:#5f5048;background:linear-gradient(transparent,#fff 40%)}
+
+  .saved{font-size:14px;color:var(--muted);line-height:1.6;border-top:1px solid rgba(250,244,238,.1);
+    padding-top:16px;margin:0}
+  .saved a{color:var(--gold-bright)}
+
+  #toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));
+    transform:translate(-50%,14px);max-width:calc(100vw - 36px);padding:13px 20px;
+    border:1px solid var(--line);border-radius:999px;background:#2e161f;color:var(--paper);
+    font-size:15px;box-shadow:0 14px 34px -12px #000;opacity:0;pointer-events:none;z-index:10;
+    transition:opacity .18s ease,transform .18s ease}
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* ---------- the printed list (also the on-screen preview) ---------- */
+  .sheet{width:7.6in;min-height:10in;background:#fff;color:#191210;font-family:var(--body);
+    line-height:1.25;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sheet p{margin:0}
+  .phead{display:flex;align-items:flex-end;justify-content:space-between;gap:.3in;
+    border-bottom:3px solid #191210;padding-bottom:.12in;margin-bottom:.14in}
+  .phead h1{font-family:var(--bebas);font-weight:400;font-size:40pt;line-height:.9;margin:0;color:#191210;letter-spacing:.01em}
+  .phead .who{font-size:12pt;color:#3e342f;margin-top:.05in}
+  .phead .tot{text-align:right;font-size:11pt;color:#3e342f;white-space:nowrap}
+  .phead .tot b{display:block;font-family:var(--bebas);font-weight:400;font-size:26pt;line-height:1;color:#191210}
+
+  table.list{width:100%;border-collapse:collapse;table-layout:fixed}
+  table.list thead{display:table-header-group}
+  table.list th{font:700 8.5pt var(--body);letter-spacing:.16em;text-transform:uppercase;color:#5f5048;
+    text-align:left;padding:0 .06in .05in;border-bottom:1.5px solid #191210}
+  table.list td{height:.42in;padding:0 .06in;border-bottom:1px solid #cfc5bb;vertical-align:middle;
+    font-size:13pt;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  table.list tr{break-inside:avoid;page-break-inside:avoid}
+  table.list .c-box{width:.42in;text-align:center}
+  table.list .c-n{width:.8in;text-align:center;font-variant-numeric:tabular-nums}
+  table.list .c-note{width:2.2in;color:#3e342f;font-size:11pt}
+  table.list .box{display:inline-block;width:.24in;height:.24in;border:1.5px solid #191210;border-radius:.03in;vertical-align:middle}
+  table.list tr.letter td{height:auto;padding-top:.1in;padding-bottom:.02in;border-bottom:0;
+    font:700 8.5pt var(--body);letter-spacing:.16em;color:#8a5f14}
+  table.list tr.blank td{border-bottom:1px solid #191210}
+  .door{font-family:var(--bebas);font-size:17pt;letter-spacing:.03em;color:#5a2d8c;
+    margin:.26in 0 .04in!important;padding-left:.06in}
+  .door small{font:500 10pt var(--body);letter-spacing:0;color:#5f5048;margin-left:.12in}
+  .pfoot{margin-top:.25in!important;font-size:9pt;color:#5f5048;display:flex;justify-content:space-between;gap:.2in;padding:0 .06in}
+
+  .paper{display:none}
+  @media print{
+    @page{size:letter;margin:.5in .45in}
+    html,body{background:#fff!important;color:#191210}
+    .screen{display:none!important}
+    .paper{display:block}
+    .paper .sheet{width:auto;min-height:0}
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap screen">
+  <h1>Guest list</h1>
+  <p class="lede">One name per line. Put a number after the name if they're bringing people,
+    like <b>Maria Lopez 2</b>. Tap <b>Print</b> and hand the paper to whoever is on the door.</p>
+
+  <label class="field"><span>Show</span>
+    <input type="text" id="show" autocomplete="off" placeholder="Venue · date">
+  </label>
+
+  <label class="field"><span>Names</span>
+    <textarea id="names" autocomplete="off" autocapitalize="words" spellcheck="false"
+      placeholder="Maria Lopez 2&#10;Sam Chen&#10;Zorongo dancers 6 – comp"></textarea>
+  </label>
+  <p class="count" id="count"></p>
+
+  <div class="opts">
+    <label>Blank lines for the door
+      <select id="blanks">
+        <option value="6">6</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="25">25</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="sort" checked> Sort A to Z</label>
+  </div>
+
+  <div class="stack">
+    <button class="btn primary" type="button" onclick="window.print()">Print the list</button>
+    <button class="btn" type="button" id="copy">Copy as text, to send to the venue</button>
+    <button class="btn quiet" type="button" id="clear">Clear the list</button>
+  </div>
+
+  <div class="preview-wrap"><span>What prints</span>
+    <div class="preview" id="preview"></div>
+  </div>
+
+  <p class="saved">Names stay saved on this phone, even if you close the page. They are never sent
+    anywhere, so clear the list yourself when the show is over.
+    Also yours: <a href="../print/">print your signs</a> and the
+    <a href="../notes/">show-day checklist</a>.</p>
+</main>
+
+<div class="paper" id="paper"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="../config.js"></script>
+<script>
+(function () {
+  var S = window.SITE || {};
+  var KEY = 'jp-guestlist';
+  var $ = function (id) { return document.getElementById(id); };
+  var show = $('show'), names = $('names'), blanks = $('blanks'), sort = $('sort');
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  // config.js carries HTML entities for the page; a text box wants plain text.
+  function plain(s) { var t = document.createElement('textarea'); t.innerHTML = s || ''; return t.value; }
+
+  /* --- remember what he typed, on this phone only ---------------------- */
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        show: show.value, names: names.value, blanks: blanks.value, sort: sort.checked
+      }));
+    } catch (e) { /* private window or storage off: the page still prints */ }
+  }
+
+  var saved = load();
+  if (typeof saved.names === 'string') names.value = saved.names;
+  if (saved.blanks) blanks.value = String(saved.blanks);
+  if (typeof saved.sort === 'boolean') sort.checked = saved.sort;
+  if (typeof saved.show === 'string' && saved.show) {
+    show.value = saved.show;
+  } else if (S.show) {
+    var first = (S.show.dates || [])[0] || '';
+    show.value = plain([S.show.venue, first].filter(Boolean).join(' · '));
+  }
+
+  /* --- one line -> { name, n, note } ------------------------------------ */
+  //   "Maria Lopez"            1 person
+  //   "Maria Lopez 2"          party of 2
+  //   "Maria Lopez +1"         her plus one, so 2
+  //   "Maria Lopez 2 - comp"   anything after a dash is a note
+  function parse(line) {
+    var note = '';
+    var m = line.match(/^(.*?)\s+[-–—]\s+(.*)$/);
+    if (m) { line = m[1]; note = m[2].trim(); }
+    var n = 1;
+    m = line.match(/^(.*?)[\s,]*(?:\+\s*(\d{1,2})|[xX×]\s*(\d{1,2})|\(\s*(\d{1,2})\s*\)|(\d{1,2}))\s*$/);
+    if (m && m[1].trim()) {
+      line = m[1];
+      if (m[2]) n = 1 + parseInt(m[2], 10);
+      else n = parseInt(m[3] || m[4] || m[5], 10);
+    }
+    return { name: line.replace(/[\s,]+$/, '').trim(), n: n || 1, note: note };
+  }
+
+  function entries() {
+    var list = names.value.split(/\r?\n/).map(function (l) { return l.trim(); })
+      .filter(Boolean).map(parse).filter(function (e) { return e.name; });
+    if (sort.checked) {
+      list.sort(function (a, b) { return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }); });
+    }
+    return list;
+  }
+
+  /* --- the paper ------------------------------------------------------- */
+  function render() {
+    var list = entries();
+    var people = list.reduce(function (t, e) { return t + e.n; }, 0);
+    var nb = parseInt(blanks.value, 10) || 0;
+
+    $('count').innerHTML = list.length
+      ? '<b>' + list.length + '</b> name' + (list.length === 1 ? '' : 's') +
+        ' &middot; <b>' + people + '</b> ' + (people === 1 ? 'person' : 'people')
+      : 'No names yet';
+
+    // A-Z dividers help the door person on a long list and just waste
+    // paper on a short one.
+    var rows = '', last = '', letters = sort.checked && list.length >= 15;
+    list.forEach(function (e) {
+      if (letters) {
+        var L = e.name.charAt(0).toUpperCase();
+        if (/[A-Z]/.test(L) && L !== last) {
+          rows += '<tr class="letter"><td colspan="4">' + L + '</td></tr>';
+          last = L;
+        }
+      }
+      rows += '<tr><td class="c-box"><span class="box"></span></td>' +
+        '<td>' + esc(e.name) + '</td><td class="c-n">' + e.n + '</td>' +
+        '<td class="c-note">' + esc(e.note) + '</td></tr>';
+    });
+
+    var blankRows = '';
+    for (var i = 0; i < nb; i++) {
+      blankRows += '<tr class="blank"><td class="c-box"><span class="box"></span></td><td></td><td class="c-n"></td><td class="c-note"></td></tr>';
+    }
+
+    var when = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    var html =
+      '<div class="sheet">' +
+        '<header class="phead"><div>' +
+          '<h1>Guest list</h1>' +
+          '<p class="who">' + esc(plain(S.artist || '')) + (show.value ? ' &middot; ' + esc(show.value) : '') + '</p>' +
+        '</div>' +
+        '<p class="tot"><b>' + people + '</b>' + (people === 1 ? 'person' : 'people') + ' on the list</p></header>' +
+        '<table class="list"><thead><tr><th class="c-box">In</th><th>Name</th><th class="c-n">Party</th><th class="c-note">Notes</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table>' +
+        (nb ? '<p class="door">Added at the door<small>name, how many, who they’re with</small></p>' +
+          '<table class="list"><tbody>' + blankRows + '</tbody></table>' : '') +
+        '<p class="pfoot"><span>Printed ' + when + '</span><span>Tick the box as each guest arrives</span></p>' +
+      '</div>';
+
+    $('paper').innerHTML = html;
+    $('preview').innerHTML = html + '<div class="more">Prints on as many pages as it needs</div>';
+    fit();
+  }
+
+  // Shrink the full-size sheet to fit the preview box.
+  function fit() {
+    var p = $('preview'), s = p.firstElementChild;
+    if (s) s.style.transform = 'scale(' + (p.clientWidth / s.offsetWidth) + ')';
+  }
+  window.addEventListener('resize', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+
+  function update() { save(); render(); }
+  [show, names, blanks, sort].forEach(function (el) {
+    el.addEventListener('input', update);
+    el.addEventListener('change', update);
+  });
+
+  /* --- buttons --------------------------------------------------------- */
+  var toast = $('toast'), timer;
+  function say(msg) {
+    toast.textContent = msg; toast.classList.add('show');
+    clearTimeout(timer); timer = setTimeout(function () { toast.classList.remove('show'); }, 2200);
+  }
+
+  $('copy').addEventListener('click', function () {
+    var list = entries();
+    var text = 'Guest list — ' + plain(S.artist || '') + (show.value ? ' · ' + show.value : '') + '\n\n' +
+      list.map(function (e) {
+        return e.name + (e.n > 1 ? ' (' + e.n + ')' : '') + (e.note ? ' — ' + e.note : '');
+      }).join('\n');
+    function ok() { say('Copied — paste it into a text or email'); }
+    function fallback() { names.focus(); names.select(); say('Press and hold to copy'); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(ok, fallback);
+    } else fallback();
+  });
+
+  $('clear').addEventListener('click', function () {
+    if (!names.value.trim() || confirm('Clear every name on the list?')) {
+      names.value = ''; update(); say('Cleared');
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

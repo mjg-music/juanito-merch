@@ -104,6 +104,22 @@ come from `config.js` — change a price there and the menu follows.
 If a URL is still a placeholder, that code is skipped and the script tells you
 which one.
 
+### The guest list page
+
+**<https://mjg-music.github.io/juanito-merch/guests/>** is a second page for
+Juanito: he types names on his phone, one per line (`Maria Lopez 2` for a party
+of two), and it prints a door list with check boxes, sorted A to Z, plus blank
+lines for names that turn up at the last minute. Names are saved in his phone's
+browser only and never leave it. It is a plain file in `guests/`, not generated
+by `npm run qr`.
+
+### The show notes page
+
+**<https://mjg-music.github.io/juanito-merch/notes/>** is the show-day checklist:
+cash box, table light, what to say on the mic, and going straight to the table
+after the show. The lines live in `showNotes` in `config.js`. Ticks are saved on
+the phone that ticked them, and "Start fresh" clears them for the next night.
+
 ---
 
 ## Changing something later

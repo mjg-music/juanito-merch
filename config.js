@@ -169,6 +169,49 @@ window.SITE = {
   /* --- Footer ------------------------------------------------- */
   footer: "Thank you for the support &mdash; come say hello.",
 
+  /* --- Show notes --------------------------------------------
+     The page at <site>/notes/ : a show-day checklist for Juanito and
+     whoever is helping at the table. Tick boxes stay ticked on that
+     phone until the "start fresh" button. Add, reword or delete lines
+     freely; each `when` is a heading, each line under it a check box.  */
+  showNotes: [
+    {
+      when: "Before doors",
+      items: [
+        "Cash box: bring change. Fives and tens, enough to break twenties for one-CD buyers.",
+        "Light for the table: Mike brings one, or ask the venue. A dark table does not sell.",
+        "Print the signs and the seat notes on the venue printer. Table tent, merch menu, email list.",
+        "Scan one printed code with a phone from a few feet away in dim light.",
+        "Guest list printed and handed to the door person.",
+        "Seat notes dropped on the seats or tables before doors open."
+      ]
+    },
+    {
+      when: "On the mic",
+      items: [
+        "Announce the CDs with the price: twenty each, three for forty.",
+        "Point at the merch table and say where it is.",
+        "Mention the email list: sign up tonight to hear Gold &amp; Rose first."
+      ]
+    },
+    {
+      when: "Right after the show",
+      items: [
+        "Juanito goes straight to the merch table. Not the green room first.",
+        "Stand next to the table, not behind it. Shake hands, talk, sign CDs.",
+        "Someone else handles the money while Juanito talks."
+      ]
+    },
+    {
+      when: "Packing up",
+      items: [
+        "Count the cash box and note how many CDs and books sold.",
+        "Collect any paper email sign-ups.",
+        "Leftover seat notes and signs go back in the box for the next show."
+      ]
+    }
+  ],
+
   /* --- QR codes ----------------------------------------------
      `npm run qr` builds one code per entry below.
      TODO: replace siteUrl with the real Vercel URL once deployed.
@@ -213,6 +256,16 @@ window.SITE = {
     // Optional. Only fill this in if it's TRUE every night, e.g.
     //   "Ask Juanito to sign it after the show"
     // Leave "" and nothing prints.
-    perk: ""
+    perk: "",
+
+    /* Seat notes: little slips to leave on every seat or table before the
+       show, ten to a page. Someone reads it while they wait for the lights
+       to go down, and it's in their pocket when they walk past the table.
+       Set seatNote: "" to leave the sheet off the print page.            */
+    seatNote: "Take the music home tonight",
+    seatNoteSub: "CDs, the method book and the email list are at the merch " +
+                 "table. Scan to see what's there, or come say hello after.",
+    // The small line at the bottom of each slip, e.g. where the table is.
+    seatNoteWhere: "Merch table in the lobby"
   }
 };

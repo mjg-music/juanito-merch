@@ -243,6 +243,26 @@ module.exports = function printPage({ SITE, codes, pretty }) {
     html: `<div class="sheet s-cards" data-file="cards">${card.repeat(6)}</div>`
   });
 
+  // 7. Seat notes — ten slips to a page for every seat or table. Read while
+  //    waiting for the lights to go down, then carried past the booth.
+  if (sg.seatNote) {
+    const slip = `
+      <div class="slip">
+        ${qr(booth, 'sqr')}
+        <div class="swords">
+          <p class="shead">${glue(sg.seatNote)}</p>
+          ${sg.seatNoteSub ? `<p class="ssub">${sg.seatNoteSub}</p>` : ''}
+          <p class="swhere">${sg.seatNoteWhere ? `<b>${sg.seatNoteWhere}</b> · ` : ''}Venmo ${venmoHandle}</p>
+        </div>
+      </div>`;
+    sheets.push({
+      file: 'seats',
+      title: 'Seat notes',
+      blurb: 'Ten small notes to a page. Cut them apart and leave one on every seat or table before doors open.',
+      html: `<div class="sheet s-seats" data-file="seats">${slip.repeat(10)}</div>`
+    });
+  }
+
   /* --- the page -------------------------------------------------------- */
 
   const items = sheets.map(s => `
@@ -331,6 +351,8 @@ module.exports = function printPage({ SITE, codes, pretty }) {
   details{margin-top:30px;color:var(--muted);font-size:14px;max-width:620px}
   details summary{cursor:pointer;min-height:46px;display:flex;align-items:center}
   details a{color:var(--gold-bright)}
+  .also{margin-top:26px;font-size:15px;color:var(--muted);max-width:620px}
+  .also a{color:var(--gold-bright);display:inline-block;padding:8px 0}
   footer{margin-top:22px;font-size:14px;color:var(--muted);
     border-top:1px solid rgba(250,244,238,.1);padding-top:16px;max-width:620px}
 
@@ -452,11 +474,38 @@ module.exports = function printPage({ SITE, codes, pretty }) {
   .s-cards .cpay{font-size:9.5pt;margin-top:.08in!important;color:var(--ink-soft);white-space:nowrap}
   .s-cards .curl{font-size:6.3pt;color:var(--ink-muted);margin-top:.06in!important;white-space:nowrap}
 
+  /* 7 seat notes */
+  .s-seats{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,1fr);border-radius:0}
+  .s-seats .slip{border:1px dashed #b8aca3;display:flex;align-items:center;gap:.14in;padding:.12in .16in;overflow:hidden}
+  .s-seats .qr.sqr{width:1.45in;height:1.45in}
+  .s-seats .swords{min-width:0}
+  .s-seats .shead{font-family:var(--bebas);font-size:17pt;line-height:.95;color:var(--purple);letter-spacing:.02em}
+  .s-seats .ssub{font-size:8.6pt;line-height:1.3;color:var(--ink-soft);margin-top:.06in!important}
+  .s-seats .swhere{font-size:7.6pt;color:var(--ink-muted);margin-top:.07in!important;line-height:1.3}
+  .s-seats .swhere b{color:var(--gold-deep)}
+
   /* ---------- paper ---------- */
   .paper{display:none}
   @media print{
-    @page{size:letter;margin:.4in .45in}
+    /* Printed on whatever the venue has, from whatever browser. Three
+       things learned the hard way, all verified by printing to PDF in both
+       Chrome and WebKit (Safari, iPhone) at many margins:
+       - color-scheme must be light on paper. Dark tells Chrome the paper
+         itself is dark, and it fills every margin with black ink.
+       - WebKit ignores @page margins and uses the printer's, and a sheet
+         that exactly fills the page spills a sliver onto a blank extra
+         page (Mike had to print at 80% to get rid of them).
+       - So the sheets print at 94% — 7.14 x 9.4in — which fits US Letter
+         and A4 at any margin up to half an inch with room to spare.
+       - With "Headers and footers" ticked (often the default), Chrome
+         stamps the date, page title, web address and "1/7" onto every
+         sign. Declaring the margin boxes empty stops it.               */
+    :root{color-scheme:light}
+    @page{size:letter;margin:.5in;
+      @top-left{content:""}@top-center{content:""}@top-right{content:""}
+      @bottom-left{content:""}@bottom-center{content:""}@bottom-right{content:""}}
     html,body{background:#fff!important}
+    .paper .sheet{zoom:.94;margin:0 auto}
     .screen{display:none!important}
     .paper{display:block}
     .paper .sheet{break-after:page;page-break-after:always;break-inside:avoid}
@@ -494,6 +543,10 @@ module.exports = function printPage({ SITE, codes, pretty }) {
     <ul>${downloads}
     </ul>
   </details>
+
+  <p class="also">Also yours: the <a href="../notes/">show-day checklist</a>, and the
+    <a href="../guests/">guest list page</a> that prints a list for the door with blank lines
+    for last-minute names.</p>
 
   <footer>Before the show, scan one printed sign with your phone from a few feet
     away in dim light. If you ever need these again, this page is always here.</footer>
