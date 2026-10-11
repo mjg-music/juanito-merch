@@ -171,9 +171,23 @@ Paper-specific rules learned the hard way:
 - Every sign that asks for money also prints the Venmo handle, PayPal address
   and check payee **in words** — at the first show a buyer's camera wouldn't
   focus, and the code was the only way in.
-- Sheets are 7.6 × 10in inside 0.4in margins; leave that slack, since iOS
-  AirPrint applies its own margins. `npm run qr` then a Chrome print-to-PDF
-  must give exactly one page per sheet.
+- Sheets are designed at 7.6 × 10in and **print at 94%** (`zoom:.94`, centred)
+  with a 0.5in `@page` margin. Don't push them back to full size: WebKit
+  (Safari, iPhone) ignores `@page` margins and uses the printer's, and a sheet
+  that exactly fills the page spills a sliver onto a blank extra page. That
+  is why Mike had to print at 80% on 2026-10-10.
+- Keep `color-scheme: light` inside `@media print`. Dark makes Chrome fill
+  every page margin with black ink.
+- Keep the empty `@page` margin boxes (`@top-left{content:""}` …). They stop
+  Chrome stamping date, title, URL and "1/7" on every sign when its
+  "Headers and footers" option is ticked.
+- **Test printing in both engines, and never trust page count alone.** Chrome
+  shrinks an oversized sign instead of adding a page, so a clipped or shrunken
+  sign still reports the right count. Print to PDF in Chrome *and* through
+  WebKit (a WKWebView print operation via `swift` works headless on macOS) at
+  margins from 0 to 0.5in on Letter and A4, then rasterise and check that each
+  page's ink is the whole sign — 7.6:10 shape, inside the printable area — and
+  that every QR code on it decodes.
 
 Write its copy for someone who does not think of himself as technical: short
 numbered steps, no jargon, and never reference a file path or a terminal. It is
